@@ -1,0 +1,68 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ProjectPrivateResource">
+
+    <attr name="coreUiButtonStyle" format="reference" />
+    <attr name="coreUiCircularButtonStyle" format="reference" />
+
+    <attr name="progressIndicatorTint" format="color" />
+    <attr name="progressIndicatorSize" format="dimension" />
+    <attr name="rippleColor" format="color" />
+    <attr name="strokeColor" format="color" />
+    <attr name="strokeWidth" format="dimension" />
+    <attr name="backgroundTint" format="color" />
+    <attr name="backgroundTintMode">
+        <enum name="src_over" value="3" />
+        <enum name="src_in" value="5" />
+        <enum name="src_atop" value="9" />
+        <enum name="multiply" value="14" />
+        <enum name="screen" value="15" />
+        <enum name="add" value="16" />
+    </attr>
+    <attr name="timerTint" format="color" />
+
+    <declare-styleable name="CoreUiButton">
+        <attr name="android:background" />
+        <attr name="progressIndicatorTint" />
+        <attr name="progressIndicatorSize" />
+        <attr name="timerTint" />
+        <attr name="rippleColor" />
+        <attr name="strokeColor" />
+        <attr name="strokeWidth" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="backgroundTint" />
+        <attr name="backgroundTintMode" />
+        <attr name="icon" format="reference" />
+        <attr name="iconTint" format="color" />
+        <attr name="iconPadding" format="dimension" />
+        <!-- TODO: replace this iconGravity name with something else. Only start and textStart are supported,
+             but we have to specify the others too because MDC defines the same attribute as well -->
+        <attr name="iconGravity">
+            <flag name="start" value="0x1" />
+            <flag name="textStart" value="0x2" />
+            <flag name="end" value="0x3" />
+            <flag name="textEnd" value="0x4" />
+            <flag name="top" value="0x10" />
+            <flag name="textTop" value="0x20" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CoreUiCircularButton">
+        <attr name="android:enabled" />
+        <attr name="tint" format="color" />
+        <attr name="android:background" />
+        <attr name="android:insetLeft" />
+        <attr name="android:insetTop" />
+        <attr name="android:insetRight" />
+        <attr name="android:insetBottom" />
+        <attr name="progressIndicatorTint" />
+        <attr name="progressIndicatorSize" />
+        <attr name="timerTint" />
+        <attr name="backgroundTint" />
+        <attr name="backgroundTintMode" />
+        <attr name="rippleColor" />
+        <attr name="strokeColor" />
+        <attr name="strokeWidth" />
+    </declare-styleable>
+
+</resources>

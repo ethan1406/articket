@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="CustomColor">
+    <!-- Pressed -->
+    <color name="design_core_ui_pressed_low">#1E0C0B31</color>
+    <color name="design_core_ui_pressed_medium">#380C0B31</color>
+    <color name="design_core_ui_pressed_high">#38FFFFFF</color>
+</resources>

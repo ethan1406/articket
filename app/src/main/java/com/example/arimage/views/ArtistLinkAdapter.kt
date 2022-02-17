@@ -1,5 +1,6 @@
 package com.example.arimage.views
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,21 +25,30 @@ internal class ArtistLinkAdapter(
 
 internal data class ArtistLinkViewModel(
     @DrawableRes val image: Int,
-    val onClick: () -> Unit
+    val text: String,
+    val onClick: (String) -> Unit,
+    val webLink: String
 )
 
 internal class ArtistLinkViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-    private val imageButton = itemView.findViewById<ImageView>(R.id.image_button)
+    private val artistLinkButton = itemView.findViewById<ArtistLinkButton>(R.id.artist_link_button)
 
     internal fun bind(viewModel: ArtistLinkViewModel) {
-        imageButton.setImageResource(viewModel.image)
+        artistLinkButton.setIconResource(viewModel.image)
+        artistLinkButton.text = viewModel.text
+
+        artistLinkButton.setOnClickListener {
+            viewModel.onClick(viewModel.webLink)
+        }
     }
 }
 
 internal object DiffCallback: DiffUtil.ItemCallback<ArtistLinkViewModel>() {
     override fun areItemsTheSame(oldItem: ArtistLinkViewModel, newItem: ArtistLinkViewModel) =
-        oldItem.image == newItem.image
+        oldItem.image == newItem.image &&
+                oldItem.text == newItem.text &&
+                oldItem.webLink == newItem.webLink
 
     override fun areContentsTheSame(oldItem: ArtistLinkViewModel, newItem: ArtistLinkViewModel) =
         oldItem == newItem

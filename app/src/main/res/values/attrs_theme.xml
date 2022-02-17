@@ -1,0 +1,64 @@
+<resources>
+    <declare-styleable name="CoreUiColorPalette">
+        <attr name="coreUiBrandInteractive" format="reference" />
+
+        <attr name="coreUiBrandVibrantPurple" format="reference" />
+        <attr name="coreUiBrandVibrantBlue" format="reference" />
+        <attr name="coreUiBrandVibrantGreen" format="reference" />
+        <attr name="coreUiBrandVibrantYellow" format="reference" />
+        <attr name="coreUiBrandVibrantOrange" format="reference" />
+        <attr name="coreUiBrandVibrantRed" format="reference" />
+        <attr name="coreUiBrandVibrantGray" format="reference" />
+
+        <attr name="coreUiBrandPastelPurple" format="reference" />
+        <attr name="coreUiBrandPastelBlue" format="reference" />
+        <attr name="coreUiBrandPastelGreen" format="reference" />
+        <attr name="coreUiBrandPastelYellow" format="reference" />
+        <attr name="coreUiBrandPastelOrange" format="reference" />
+        <attr name="coreUiBrandPastelRed" format="reference" />
+        <attr name="coreUiBrandPastelGray" format="reference" />
+        <attr name="coreUiBrandPastelIndigo" format="reference" />
+        <attr name="coreUiBrandPastelPink" format="reference" />
+
+        <attr name="coreUiTextPrimary" format="reference" />
+        <attr name="coreUiTextSecondary" format="reference" />
+        <attr name="coreUiTextTertiary" format="reference" />
+        <attr name="coreUiTextPlaceholder" format="reference" />
+        <attr name="coreUiTextPositive" format="reference" />
+        <attr name="coreUiTextNegative" format="reference" />
+        <attr name="coreUiTextInteractive" format="reference" />
+        <attr name="coreUiTextInteractiveLegal" format="reference" />
+        <attr name="coreUiTextPrimaryInverse" format="reference" />
+
+        <attr name="coreUiIconPrimary" format="reference" />
+        <attr name="coreUiIconSecondary" format="reference" />
+        <attr name="coreUiIconTertiary" format="reference" />
+        <attr name="coreUiIconPositive" format="reference" />
+        <attr name="coreUiIconNegative" format="reference" />
+        <attr name="coreUiIconInteractive" format="reference" />
+        <attr name="coreUiIconPrimaryInverse" format="reference" />
+
+        <attr name="coreUiBackgroundPrimary" format="reference" />
+        <attr name="coreUiBackgroundSecondary" format="reference" />
+        <attr name="coreUiBackgroundScrim" format="reference" />
+
+        <attr name="coreUiSurfacePrimary" format="reference" />
+        <attr name="coreUiSurfaceSecondary" format="reference" />
+        <attr name="coreUiSurfaceTertiary" format="reference" />
+        <attr name="coreUiSurfacePositive" format="reference" />
+        <attr name="coreUiSurfaceNegative" format="reference" />
+        <attr name="coreUiSurfaceInteractive" format="reference" />
+        <attr name="coreUiSurfacePrimaryInverse" format="reference" />
+
+        <attr name="coreUiStrokePrimary" format="reference" />
+        <attr name="coreUiStrokeSecondary" format="reference" />
+        <attr name="coreUiStrokeTertiary" format="reference" />
+        <attr name="coreUiStrokeNegative" format="reference" />
+        <attr name="coreUiStrokeInteractive" format="reference" />
+        <attr name="coreUiStrokePrimaryInverse" format="reference" />
+
+        <attr name="coreUiPressedLow" format="reference" />
+        <attr name="coreUiPressedMedium" format="reference" />
+        <attr name="coreUiPressedHigh" format="reference" />
+    </declare-styleable>
+</resources>

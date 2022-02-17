@@ -20,6 +20,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.core.math.MathUtils
 import androidx.core.widget.TextViewCompat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.example.arimage.R
 
 /**
  * Implementation of a Core UI Button.
@@ -183,7 +184,7 @@ class ArtistLinkButton @JvmOverloads constructor(
             progressDrawable =
                 AnimatedVectorDrawableCompat.create(
                     this.context,
-                    com.lyft.android.design.coreui.components.progressindicator.R.drawable.design_core_ui_components_progress_indicator_avd_circular_indeterminate
+                    R.drawable.progress_indicator_circular
                 )!!.apply {
                     val tint = ta.getColorStateList(R.styleable.CoreUiButton_progressIndicatorTint)
                     val size = ta.getDimensionPixelSize(R.styleable.CoreUiButton_progressIndicatorSize, 0)
@@ -526,7 +527,7 @@ class ArtistLinkButton @JvmOverloads constructor(
             ButtonContent(text, contentDescription, iconHelper.getIcon(), isEnabled, timerProgress)
 
         text = null
-        contentDescription = resources.getString(R.string.design_core_ui_components_button_loading_content_description)
+        contentDescription = resources.getString(R.string.button_loading_content_description)
         iconHelper.setIcon(null)
         isEnabled = false
         timerProgress = 0f

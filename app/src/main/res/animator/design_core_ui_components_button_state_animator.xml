@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:state_pressed="true"
+        >
+        <set
+            android:interpolator="@interpolator/design_core_ui_motion_curve_change"
+            android:shareInterpolator="true"
+            android:ordering="together"
+            >
+            <objectAnimator
+                android:duration="@integer/design_core_ui_motion_duration_quick_ms"
+                android:propertyName="elevation"
+                android:valueTo="0dp"
+                android:valueType="floatType"
+                />
+
+            <objectAnimator
+                android:duration="@integer/design_core_ui_motion_duration_quick_ms"
+                android:propertyName="scaleX"
+                android:valueTo="0.98"
+                android:valueType="floatType"
+                />
+
+            <objectAnimator
+                android:duration="@integer/design_core_ui_motion_duration_quick_ms"
+                android:propertyName="scaleY"
+                android:valueTo="0.98"
+                android:valueType="floatType"
+                />
+
+        </set>
+    </item>
+
+    <item>
+        <set
+            android:interpolator="@interpolator/design_core_ui_motion_curve_change"
+            android:shareInterpolator="true"
+            android:ordering="together"
+            >
+            <objectAnimator
+                android:duration="@integer/design_core_ui_motion_duration_quick_ms"
+                android:propertyName="elevation"
+                android:valueTo="2dp"
+                android:valueType="floatType"
+                />
+
+            <objectAnimator
+                android:duration="@integer/design_core_ui_motion_duration_quick_ms"
+                android:propertyName="scaleX"
+                android:valueTo="1"
+                android:valueType="floatType"
+                />
+
+            <objectAnimator
+                android:duration="@integer/design_core_ui_motion_duration_quick_ms"
+                android:propertyName="scaleY"
+                android:valueTo="1"
+                android:valueType="floatType"
+                />
+        </set>
+    </item>
+
+</selector>

@@ -1,0 +1,12 @@
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="IllegibleTextSize">
+
+    <dimen name="design_core_ui_components_button_focus_compact_corner_radius">24dp</dimen>
+    <dimen name="design_core_ui_components_button_focus_corner_radius">28dp</dimen>
+    <dimen name="design_core_ui_components_button_drive_compact_corner_radius">32dp</dimen>
+    <dimen name="design_core_ui_components_button_drive_corner_radius">36dp</dimen>
+    <dimen name="design_core_ui_components_button_stroke">1dp</dimen>
+    <dimen name="design_core_ui_components_button_text_auto_size_granularity">1sp</dimen>
+
+</resources>

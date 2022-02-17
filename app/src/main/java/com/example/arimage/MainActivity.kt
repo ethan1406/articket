@@ -12,6 +12,8 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
@@ -46,7 +48,6 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
         setContentView(R.layout.activity_main)
 
         initializeRecyclerViewAdapter()
-
         supportFragmentManager.addFragmentOnAttachListener(this)
 
         if (savedInstanceState == null) {
@@ -138,6 +139,9 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
                 node.parent = anchorNode
                 node.localRotation = Quaternion(Vector3(1f, 0f, 0f), -90f)
                 node.localPosition = Vector3(0f, 0f, image.extentZ)
+                //node.localScale = Vector3(0.05f,  0.01f, 1f)
+                node.scaleController.minScale = 0.1f
+                node.scaleController.maxScale = 0.2f
             }
             .exceptionally {
                 Toast.makeText(this, "Please try again", Toast.LENGTH_SHORT).show()
@@ -148,10 +152,27 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
             listOf(
                 ArtistLinkViewModel(
                     image = R.drawable.team_wang,
-                    onClick = {}
+                    text = "Wang Merch",
+                    onClick = { openWebView(it) },
+                    webLink = "https://teamwangdesign.com/"
+                ),
+                ArtistLinkViewModel(
+                    image = R.drawable.bird,
+                    text = "Website",
+                    onClick = {},
+                    webLink = ""
                 )
             )
         )
+    }
+
+    private fun openWebView(url: String) {
+        val customTabsIntent = createCustomTabIntent()
+        try {
+            customTabsIntent.launchUrl(this, url.toUri())
+        } catch (e: Exception) {
+            Toast.makeText(this, "Please try again", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getScale(image: AugmentedImage, videoHeight: Int, videoWidth: Int): Vector3 {
@@ -188,4 +209,10 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
             arFragment.setOnSessionConfigurationListener(this)
         }
     }
+
+    private fun createCustomTabIntent(): CustomTabsIntent =
+        CustomTabsIntent.Builder()
+            .setExitAnimations(this, 0, 0)
+            .setShowTitle(true)
+            .build()
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Brand -->
+    <color name="design_core_ui_brand_interactive">@color/teal_200</color>
+    <color name="design_core_ui_brand_interactive_deprecated">@color/design_core_ui_purple60_deprecated</color>
+
+    <!-- Brand Vibrant -->
+    <color name="design_core_ui_brand_vibrant_purple">@color/design_core_ui_purple40</color>
+    <color name="design_core_ui_brand_vibrant_blue">@color/design_core_ui_blue50</color>
+    <color name="design_core_ui_brand_vibrant_green">@color/design_core_ui_mint20</color>
+    <color name="design_core_ui_brand_vibrant_yellow">@color/design_core_ui_yellow30</color>
+    <color name="design_core_ui_brand_vibrant_orange">@color/design_core_ui_amber80</color>
+    <color name="design_core_ui_brand_vibrant_red">@color/design_core_ui_red40</color>
+    <color name="design_core_ui_brand_vibrant_gray">@color/design_core_ui_gray50</color>
+
+    <!-- Brand Pastel -->
+    <color name="design_core_ui_brand_pastel_purple">@color/design_core_ui_purple5</color>
+    <color name="design_core_ui_brand_pastel_blue">@color/design_core_ui_cyan5</color>
+    <color name="design_core_ui_brand_pastel_green">@color/design_core_ui_mint5</color>
+    <color name="design_core_ui_brand_pastel_yellow">@color/design_core_ui_citron10</color>
+    <color name="design_core_ui_brand_pastel_orange">@color/design_core_ui_amber10</color>
+    <color name="design_core_ui_brand_pastel_red">@color/design_core_ui_rose5</color>
+    <color name="design_core_ui_brand_pastel_gray">@color/design_core_ui_gray10</color>
+    <color name="design_core_ui_brand_pastel_indigo">@color/design_core_ui_indigo10</color>
+    <color name="design_core_ui_brand_pastel_pink">@color/design_core_ui_pink5</color>
+
+    <!-- Background -->
+    <color name="design_core_ui_background_primary">@color/design_core_ui_gray0</color>
+    <color name="design_core_ui_background_secondary">@color/design_core_ui_gray5</color>
+    <color name="design_core_ui_background_scrim">@color/design_core_ui_gray100_alpha30</color>
+
+    <!-- Surface -->
+    <color name="design_core_ui_surface_primary">@color/design_core_ui_gray0</color>
+    <color name="design_core_ui_surface_secondary">@color/design_core_ui_indigo100_alpha5</color>
+    <color name="design_core_ui_surface_tertiary">@color/design_core_ui_gray100_alpha16</color>
+    <color name="design_core_ui_surface_positive">@color/design_core_ui_mint60</color>
+    <color name="design_core_ui_surface_negative">@color/design_core_ui_sunset60</color>
+    <color name="design_core_ui_surface_interactive_deprecated">@color/design_core_ui_purple60_deprecated</color>
+    <color name="design_core_ui_surface_primary_inverse">@color/design_core_ui_gray80</color>
+
+    <!-- Stroke -->
+    <color name="design_core_ui_stroke_primary">@color/design_core_ui_gray100</color>
+    <color name="design_core_ui_stroke_secondary">@color/design_core_ui_gray100_alpha45</color>
+    <color name="design_core_ui_stroke_tertiary">@color/design_core_ui_gray100_alpha16</color>
+    <color name="design_core_ui_stroke_negative">@color/design_core_ui_sunset60</color>
+    <color name="design_core_ui_stroke_interactive_deprecated">@color/design_core_ui_purple60_deprecated</color>
+    <color name="design_core_ui_stroke_primary_inverse">@color/design_core_ui_gray0</color>
+
+</resources>

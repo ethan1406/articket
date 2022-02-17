@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="CustomAutoSizeTextSize,ProjectPrivateResource">
+
+    <style name="CoreUiButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeStepGranularity">@dimen/design_core_ui_components_button_text_auto_size_granularity</item>
+        <item name="android:paddingStart">@dimen/design_core_ui_spacing_two</item>
+        <item name="android:paddingEnd">@dimen/design_core_ui_spacing_two</item>
+        <item name="android:paddingTop">@dimen/design_core_ui_spacing_half</item>
+        <item name="android:paddingBottom">@dimen/design_core_ui_spacing_half</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="iconPadding">@dimen/design_core_ui_spacing_one</item>
+        <item name="iconGravityValue">textStart</item>
+        <item name="strokeWidth">@dimen/design_core_ui_components_button_stroke</item>
+    </style>
+
+    <style name="CoreUiButton.Focus">
+        <item name="android:minHeight">@dimen/design_core_ui_grid56</item>
+        <item name="autoSizeMinTextSize">18sp</item>
+        <item name="autoSizeMaxTextSize">22sp</item>
+        <item name="android:textAppearance">@style/CoreUiTextAppearance.HeadlineF2</item>
+        <item name="progressIndicatorSize">@dimen/design_core_ui_grid32</item>
+        <item name="cornerRadius">@dimen/design_core_ui_components_button_focus_corner_radius</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact">
+        <item name="android:minHeight">@dimen/design_core_ui_grid48</item>
+        <item name="autoSizeMinTextSize">15sp</item>
+        <item name="autoSizeMaxTextSize">17sp</item>
+        <item name="android:textAppearance">@style/CoreUiTextAppearance.TitleF2</item>
+        <item name="progressIndicatorSize">@dimen/design_core_ui_grid24</item>
+        <item name="cornerRadius">@dimen/design_core_ui_components_button_focus_compact_corner_radius</item>
+    </style>
+
+    <style name="CoreUiButton.Drive">
+        <item name="android:paddingStart">@dimen/design_core_ui_spacing_three</item>
+        <item name="android:paddingEnd">@dimen/design_core_ui_spacing_three</item>
+        <item name="android:minHeight">@dimen/design_core_ui_grid72</item>
+        <item name="autoSizeMinTextSize">26sp</item>
+        <item name="autoSizeMaxTextSize">28sp</item>
+        <item name="android:textAppearance">@style/CoreUiTextAppearance.HeadlineD2</item>
+        <item name="progressIndicatorSize">@dimen/design_core_ui_grid48</item>
+        <item name="cornerRadius">@dimen/design_core_ui_components_button_drive_corner_radius</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Compact">
+        <item name="android:minHeight">@dimen/design_core_ui_grid64</item>
+        <item name="autoSizeMinTextSize">24sp</item>
+        <item name="autoSizeMaxTextSize">26sp</item>
+        <item name="android:textAppearance">@style/CoreUiTextAppearance.HeadlineD3</item>
+        <item name="progressIndicatorSize">@dimen/design_core_ui_grid40</item>
+        <item name="cornerRadius">@dimen/design_core_ui_components_button_drive_compact_corner_radius</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact.Primary">
+        <item name="android:textColor">?coreUiTextPrimaryInverse</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimaryInverse</item>
+        <item name="rippleColor">@color/design_core_ui_pressed_medium</item>
+        <item name="backgroundTint">@color/black</item>
+        <item name="backgroundTintModeValue">src_over</item>
+        <item name="timerTint">@color/design_core_ui_components_button_primary_timer</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact.Primary.Destructive">
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_destructive_bg</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Primary">
+        <item name="android:textColor">@color/design_core_ui_components_button_primary_text_inverse_no_disable</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="progressIndicatorTint">@color/design_core_ui_components_button_primary_icon_inverse_no_disable</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_primary_pressed</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_bg</item>
+        <item name="backgroundTintModeValue">src_over</item>
+        <item name="timerTint">@color/design_core_ui_components_button_primary_timer</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Primary.Destructive">
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_destructive_bg</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Compact.Primary">
+        <item name="android:textColor">@color/design_core_ui_components_button_primary_text_inverse_no_disable</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="progressIndicatorTint">@color/design_core_ui_components_button_primary_icon_inverse_no_disable</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_primary_pressed</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_bg</item>
+        <item name="backgroundTintModeValue">src_over</item>
+        <item name="timerTint">@color/design_core_ui_components_button_primary_timer</item>
+        <item name="iconTint">@color/design_core_ui_components_button_primary_icon_inverse_no_disable</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Compact.Primary.Destructive">
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_destructive_bg</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Primary">
+        <item name="android:textColor">@color/design_core_ui_components_button_primary_text_inverse_no_disable</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="progressIndicatorTint">@color/design_core_ui_components_button_primary_icon_inverse_no_disable</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_primary_pressed</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_bg</item>
+        <item name="backgroundTintModeValue">src_over</item>
+        <item name="timerTint">@color/design_core_ui_components_button_primary_timer</item>
+        <item name="iconTint">@color/design_core_ui_components_button_primary_icon_inverse_no_disable</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Primary.Destructive">
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_destructive_bg</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact.Primary.Elevated">
+        <item name="android:hapticFeedbackEnabled">true</item>
+        <item name="android:stateListAnimator">@animator/design_core_ui_components_button_state_animator</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Primary.Elevated">
+        <item name="android:hapticFeedbackEnabled">true</item>
+        <item name="android:stateListAnimator">@animator/design_core_ui_components_button_state_animator</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Compact.Primary.Elevated">
+        <item name="android:hapticFeedbackEnabled">true</item>
+        <item name="android:stateListAnimator">@animator/design_core_ui_components_button_state_animator</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Primary.Elevated">
+        <item name="android:hapticFeedbackEnabled">true</item>
+        <item name="android:stateListAnimator">@animator/design_core_ui_components_button_state_animator</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact.Primary.Neutral">
+        <item name="android:hapticFeedbackEnabled">true</item>
+        <item name="android:stateListAnimator">@animator/design_core_ui_components_button_state_animator</item>
+        <item name="android:textColor">?coreUiTextPrimary</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimary</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_neutral_bg</item>
+        <item name="backgroundTintModeValue">src_over</item>
+        <item name="timerTint">@color/design_core_ui_components_button_primary_neutral_timer</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_primary_neutral_pressed</item>
+        <item name="iconTint">?coreUiIconPrimary</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Primary.Neutral">
+        <item name="android:hapticFeedbackEnabled">true</item>
+        <item name="android:stateListAnimator">@animator/design_core_ui_components_button_state_animator</item>
+        <item name="android:textColor">?coreUiTextPrimary</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimary</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_primary_neutral_bg</item>
+        <item name="backgroundTintModeValue">src_over</item>
+        <item name="timerTint">@color/design_core_ui_components_button_primary_neutral_timer</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_primary_neutral_pressed</item>
+        <item name="iconTint">?coreUiIconPrimary</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact.Secondary">
+        <item name="android:textColor">?coreUiTextPrimary</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimary</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_secondary_bg</item>
+        <item name="backgroundTintModeValue">src_in</item>
+        <item name="iconTint">?coreUiIconPrimary</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_timer</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_pressed</item>
+        <item name="strokeColor">@color/design_core_ui_components_button_secondary_stroke</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact.Secondary.Destructive">
+        <item name="android:textColor">?coreUiTextNegative</item>
+        <item name="iconTint">?coreUiIconNegative</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Compact.Secondary.Neutral">
+        <item name="android:textColor">?coreUiTextPrimaryInverse</item>
+        <item name="iconTint">?coreUiIconPrimaryInverse</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimaryInverse</item>
+        <item name="strokeColor">?coreUiStrokePrimaryInverse</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_neutral_pressed</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_neutral_timer</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Secondary">
+        <item name="android:textColor">?coreUiTextPrimary</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimary</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_secondary_bg</item>
+        <item name="backgroundTintModeValue">src_in</item>
+        <item name="iconTint">?coreUiIconPrimary</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_timer</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_pressed</item>
+        <item name="strokeColor">@color/design_core_ui_components_button_secondary_stroke</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Secondary.Destructive">
+        <item name="android:textColor">?coreUiTextNegative</item>
+        <item name="iconTint">?coreUiIconNegative</item>
+    </style>
+
+    <style name="CoreUiButton.Focus.Secondary.Neutral">
+        <item name="android:textColor">?coreUiTextPrimaryInverse</item>
+        <item name="iconTint">?coreUiIconPrimaryInverse</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimaryInverse</item>
+        <item name="strokeColor">?coreUiStrokePrimaryInverse</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_neutral_pressed</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_neutral_timer</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Compact.Secondary">
+        <item name="android:textColor">?coreUiTextPrimary</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimary</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_secondary_bg</item>
+        <item name="backgroundTintModeValue">src_in</item>
+        <item name="iconTint">?coreUiIconPrimary</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_timer</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_pressed</item>
+        <item name="strokeColor">@color/design_core_ui_components_button_secondary_stroke</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Compact.Secondary.Destructive">
+        <item name="android:textColor">?coreUiTextNegative</item>
+        <item name="iconTint">?coreUiIconNegative</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Compact.Secondary.Neutral">
+        <item name="android:textColor">?coreUiTextPrimaryInverse</item>
+        <item name="iconTint">?coreUiIconPrimaryInverse</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimaryInverse</item>
+        <item name="strokeColor">?coreUiStrokePrimaryInverse</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_neutral_pressed</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_neutral_timer</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Secondary">
+        <item name="android:textColor">?coreUiTextPrimary</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimary</item>
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="backgroundTint">@color/design_core_ui_components_button_secondary_bg</item>
+        <item name="backgroundTintModeValue">src_in</item>
+        <item name="iconTint">?coreUiIconPrimary</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_timer</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_pressed</item>
+        <item name="strokeColor">@color/design_core_ui_components_button_secondary_stroke</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Secondary.Destructive">
+        <item name="android:textColor">?coreUiTextNegative</item>
+        <item name="iconTint">?coreUiIconNegative</item>
+    </style>
+
+    <style name="CoreUiButton.Drive.Secondary.Neutral">
+        <item name="android:textColor">?coreUiTextPrimaryInverse</item>
+        <item name="iconTint">?coreUiIconPrimaryInverse</item>
+        <item name="progressIndicatorTint">?coreUiIconPrimaryInverse</item>
+        <item name="strokeColor">?coreUiStrokePrimaryInverse</item>
+        <item name="rippleColor">@color/design_core_ui_components_button_secondary_neutral_pressed</item>
+        <item name="timerTint">@color/design_core_ui_components_button_secondary_neutral_timer</item>
+    </style>
+
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="design_core_ui_elevation_level1">1dp</dimen>
+    <dimen name="design_core_ui_elevation_level2">2dp</dimen>
+    <dimen name="design_core_ui_elevation_level3">3dp</dimen>
+    <dimen name="design_core_ui_elevation_level4">4dp</dimen>
+    <dimen name="design_core_ui_elevation_level5">6dp</dimen>
+    <dimen name="design_core_ui_elevation_level6">8dp</dimen>
+    <dimen name="design_core_ui_elevation_level7">12dp</dimen>
+    <dimen name="design_core_ui_elevation_level8">16dp</dimen>
+    <dimen name="design_core_ui_elevation_panel">16dp</dimen>
+</resources>

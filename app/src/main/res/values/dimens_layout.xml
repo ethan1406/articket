@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="design_core_ui_spacing_zero">0dp</dimen>
+    <dimen name="design_core_ui_spacing_half">4dp</dimen>
+    <dimen name="design_core_ui_spacing_one">8dp</dimen>
+    <dimen name="design_core_ui_spacing_two">16dp</dimen>
+    <dimen name="design_core_ui_spacing_three">24dp</dimen>
+    <dimen name="design_core_ui_spacing_four">32dp</dimen>
+    <dimen name="design_core_ui_spacing_five">40dp</dimen>
+    <dimen name="design_core_ui_spacing_six">48dp</dimen>
+    <dimen name="design_core_ui_spacing_seven">56dp</dimen>
+    <dimen name="design_core_ui_spacing_eight">64dp</dimen>
+</resources>

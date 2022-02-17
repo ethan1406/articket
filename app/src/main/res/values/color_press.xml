@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Button - Primary -->
+    <color name="design_core_ui_components_button_primary_pressed">@color/design_core_ui_pressed_medium</color>
+
+    <!-- Button - Primary Neutral -->
+    <color name="design_core_ui_components_button_primary_neutral_pressed">@color/design_core_ui_pressed_low</color>
+
+    <!-- Button - Secondary -->
+    <color name="design_core_ui_components_button_secondary_bg">@android:color/transparent</color>
+    <color name="design_core_ui_components_button_secondary_pressed">@color/design_core_ui_pressed_low</color>
+    <color name="design_core_ui_components_button_secondary_stroke">@color/design_core_ui_stroke_secondary</color>
+
+    <!-- Button - Secondary Neutral -->
+    <color name="design_core_ui_components_button_secondary_neutral_pressed">@color/design_core_ui_pressed_low</color>
+
+</resources>

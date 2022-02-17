@@ -27,7 +27,7 @@ internal class ArtistLinkButtonIconHelper(private val view: ArtistLinkButton) {
         // Parse icon
         iconPadding = ta.getDimensionPixelSize(R.styleable.CoreUiButton_iconPadding, 0)
         iconTint = ta.getColorStateList(R.styleable.CoreUiButton_iconTint)
-        iconGravity = when (ta.getInteger(R.styleable.CoreUiButton_iconGravity, ICON_GRAVITY_START)) {
+        iconGravity = when (ta.getInteger(R.styleable.CoreUiButton_iconGravityValue, ICON_GRAVITY_START)) {
             ICON_GRAVITY_START      -> IconGravity.START
             ICON_GRAVITY_TEXT_START -> IconGravity.TEXT_START
             else                    -> throw IllegalArgumentException("Unknown icon gravity provided")

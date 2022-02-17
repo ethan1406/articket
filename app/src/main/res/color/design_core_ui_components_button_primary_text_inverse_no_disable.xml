@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- IMPORTANT: this ColorStateList MUST be inflated with AppCompatResources#getColorStateList() -->
+    <item android:color="?coreUiTextPrimaryInverse" />
+</selector>

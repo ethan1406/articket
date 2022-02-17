@@ -11,7 +11,7 @@
     <attr name="strokeColor" format="color" />
     <attr name="strokeWidth" format="dimension" />
     <attr name="backgroundTint" format="color" />
-    <attr name="backgroundTintMode">
+    <attr name="backgroundTintModeValue">
         <enum name="src_over" value="3" />
         <enum name="src_in" value="5" />
         <enum name="src_atop" value="9" />
@@ -35,9 +35,7 @@
         <attr name="icon" format="reference" />
         <attr name="iconTint" format="color" />
         <attr name="iconPadding" format="dimension" />
-        <!-- TODO: replace this iconGravity name with something else. Only start and textStart are supported,
-             but we have to specify the others too because MDC defines the same attribute as well -->
-        <attr name="iconGravity">
+        <attr name="iconGravityValue">
             <flag name="start" value="0x1" />
             <flag name="textStart" value="0x2" />
             <flag name="end" value="0x3" />

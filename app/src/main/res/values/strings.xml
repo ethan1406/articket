@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">arimage</string>
+
+    <string
+        name="button_loading_content_description"
+        translation_description="Accessibility label for a loading button">
+        Loading
+    </string>
 </resources>

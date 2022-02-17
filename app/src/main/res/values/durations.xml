@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="design_core_ui_motion_duration_quick_ms">100</integer>
+    <integer name="design_core_ui_motion_duration_short_ms">200</integer>
+    <integer name="design_core_ui_motion_duration_short_exit_ms">200</integer>
+    <integer name="design_core_ui_motion_duration_medium_ms">300</integer>
+    <integer name="design_core_ui_motion_duration_medium_exit_ms">250</integer>
+    <integer name="design_core_ui_motion_duration_long_ms">350</integer>
+    <integer name="design_core_ui_motion_duration_long_exit_ms">300</integer>
+</resources>

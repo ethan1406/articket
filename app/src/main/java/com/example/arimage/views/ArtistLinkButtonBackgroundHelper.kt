@@ -62,7 +62,7 @@ internal class ArtistLinkButtonBackgroundHelper(
         }
 
         maskDrawable.cornerRadius = cornerRadius
-        maskDrawable.setColor(AttrResolver.getColor(button.context, com.lyft.android.design.coreui.R.attr.coreUiSurfacePrimary))
+        maskDrawable.setColor(AttrResolver.getColor(button.context, R.attr.coreUiSurfacePrimary))
 
         val drawables = mutableListOf<Drawable>(baseDrawable)
         timerClipDrawable?.let { drawables.add(it) }

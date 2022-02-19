@@ -1,25 +1,33 @@
 package com.example.arimage
 
+import android.content.ContentValues
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.widget.ImageButton
+import android.widget.MediaController
 import android.widget.Toast
+import android.widget.VideoView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.arimage.views.ArtistLinkAdapter
 import com.example.arimage.views.ArtistLinkViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.ar.core.Anchor
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.AugmentedImageDatabase
@@ -37,11 +45,15 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
 import java.io.IOException
 
+// TODO create a view model that encapsulates data, video recorder and mediaplayer. Try to create a dedicated fragment class
 class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, FragmentOnAttachListener {
     private var isAdded = false
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var arFragment: ArFragment
     private lateinit var artistLinkAdapter: ArtistLinkAdapter
+
+    private val videoView by lazy { findViewById<VideoView>(R.id.video_view) }
+    private val arFragmentView by lazy { findViewById<FragmentContainerView>(R.id.arFragment) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +69,8 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
                     .commit()
             }
         }
+
+
     }
 
     private fun initializeRecyclerViewAdapter() {
@@ -201,11 +215,13 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
         arFragment.instructionsController = null
         // Check for image detection
         arFragment.setOnAugmentedImageUpdateListener(this::onAugmentedImageTrackingUpdate)
+        initializeRecorder()
     }
 
     override fun onAttachFragment(fragmentManager: FragmentManager, fragment: Fragment) {
         if (fragment.id == R.id.arFragment) {
             arFragment = fragment as ArFragment
+
             arFragment.setOnSessionConfigurationListener(this)
         }
     }
@@ -215,4 +231,60 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
             .setExitAnimations(this, 0, 0)
             .setShowTitle(true)
             .build()
+
+    private fun toggleRecording(videoRecorder: VideoRecorder, recordButton: FloatingActionButton) {
+        val recording = videoRecorder.onToggleRecord()
+
+        recording.onSuccess { isRecording ->
+            if (isRecording) {
+                recordButton.setImageResource(R.drawable.round_stop)
+            } else {
+                mediaPlayer?.pause()
+                arFragmentView.isVisible = false
+                videoView.isVisible = true
+                startVideo(Uri.fromFile(videoRecorder.videoPath))
+
+                recordButton.setImageResource(R.drawable.round_videocam)
+//                videoRecorder.videoPath?.absolutePath?.let {
+//                    Toast.makeText(this, "Video saved: $it", Toast.LENGTH_SHORT).show()
+//
+//                    // Send  notification of updated content.
+//                    val values = ContentValues()
+//                    values.put(MediaStore.Video.Media.TITLE, "Jackson Wang")
+//                    values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+//
+//                    values.put(MediaStore.Video.Media.DATA, it)
+//                    contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
+//                }
+
+            }
+        }
+
+        recording.onFailure {
+            Toast.makeText(this, "Please try again", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    private fun startVideo(uri: Uri) {
+        val mediaController = MediaController(this)
+        mediaController.setAnchorView(videoView)
+        videoView.isVisible = true
+        videoView.setVideoURI(uri)
+        videoView.requestFocus()
+        videoView.setMediaController(mediaController)
+        videoView.start()
+        //videoView.setOnPreparedListener { mediaPlayer -> mediaPlayer.isLooping = true }
+    }
+
+    private fun initializeRecorder() {
+        val videoRecorder = VideoRecorder(
+            arFragment.arSceneView,
+            this
+        )
+        val recordButton = findViewById<FloatingActionButton>(R.id.record)
+        recordButton.setOnClickListener {
+            toggleRecording(videoRecorder, recordButton)
+        }
+    }
 }

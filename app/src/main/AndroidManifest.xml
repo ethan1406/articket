@@ -18,6 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Arimage"
         >
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.arimage.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />

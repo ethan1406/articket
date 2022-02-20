@@ -2,6 +2,7 @@ package com.example.arimage
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
@@ -12,12 +13,14 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.widget.ImageButton
 import android.widget.MediaController
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.FileProvider.getUriForFile
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -54,6 +57,7 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
 
     private val videoView by lazy { findViewById<VideoView>(R.id.video_view) }
     private val arFragmentView by lazy { findViewById<FragmentContainerView>(R.id.arFragment) }
+    private val shareButton by lazy { findViewById<ImageButton>(R.id.share_btn) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -242,7 +246,26 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
                 mediaPlayer?.pause()
                 arFragmentView.isVisible = false
                 videoView.isVisible = true
-                startVideo(Uri.fromFile(videoRecorder.videoPath))
+                shareButton.isVisible = true
+                val uri = Uri.fromFile(videoRecorder.recordingFile)
+                startVideo(uri)
+
+                shareButton.setOnClickListener {
+                    videoRecorder.recordingFile?.let { file ->
+                        val contentUri = getUriForFile(this, FileProviderConstants.AUTHORITY, file)
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_STREAM, contentUri)
+                            type = "video/mp4"
+                        }
+
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        startActivity(shareIntent)
+                    } ?: run {
+                        Toast.makeText(this, "Please try again", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
 
                 recordButton.setImageResource(R.drawable.round_videocam)
 //                videoRecorder.videoPath?.absolutePath?.let {
@@ -267,19 +290,17 @@ class MainActivity : AppCompatActivity(), OnSessionConfigurationListener, Fragme
     }
 
     private fun startVideo(uri: Uri) {
-        val mediaController = MediaController(this)
-        mediaController.setAnchorView(videoView)
         videoView.isVisible = true
         videoView.setVideoURI(uri)
         videoView.requestFocus()
-        videoView.setMediaController(mediaController)
         videoView.start()
-        //videoView.setOnPreparedListener { mediaPlayer -> mediaPlayer.isLooping = true }
+        videoView.setOnPreparedListener { mediaPlayer -> mediaPlayer.isLooping = true }
     }
 
     private fun initializeRecorder() {
         val videoRecorder = VideoRecorder(
             arFragment.arSceneView,
+            contentResolver,
             this
         )
         val recordButton = findViewById<FloatingActionButton>(R.id.record)

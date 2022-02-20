@@ -1,9 +1,9 @@
 package com.example.arimage
 
+import android.content.ContentResolver
 import android.content.Context
 import android.media.CamcorderProfile
 import android.media.MediaRecorder
-import android.os.Environment
 import android.util.Log
 import android.util.Size
 import com.google.ar.sceneform.SceneView
@@ -26,12 +26,12 @@ private val QUALITY_LEVELS = listOf(
     CamcorderProfile.QUALITY_480P
 )
 
-private const val folder = "/artists"
-
-private const val videoBaseName = "ar"
+private const val VIDEO_BASE_NAME = "artist"
+private const val MAX_DURATION_MS = 10000
 
 class VideoRecorder(
     private val sceneView: SceneView,
+    private val contentResolver: ContentResolver,
     context: Context
 ) {
     // recordingVideoFlag is true when the media recorder is capturing video.
@@ -41,11 +41,9 @@ class VideoRecorder(
     private var mediaRecorder: MediaRecorder? = null
     private var videoSize: Size? = null
     private val videoDirectory = File(
-        context.getExternalFilesDir(Environment.DIRECTORY_DCIM)
-            .toString() + folder
+        context.filesDir, FileProviderConstants.FILE_NAME
     )
-    var videoPath: File? = null
-
+    var recordingFile: File? = null
 
     /**
      * Toggles the state of video recording.
@@ -87,10 +85,7 @@ class VideoRecorder(
             mediaRecorder = MediaRecorder()
         }
 
-        if (buildFilename().not()) {
-            return Result.failure(Throwable())
-        }
-        val file = videoPath ?: return Result.failure(Throwable())
+        recordingFile = buildFile() ?: return Result.failure(Throwable())
         val profile = getCamcorderProfile() ?: return Result.failure(Throwable())
         videoSize = Size(profile.videoFrameHeight, profile.videoFrameWidth)
 
@@ -98,33 +93,28 @@ class VideoRecorder(
             mediaRecorder?.run {
                 setVideoSource(MediaRecorder.VideoSource.SURFACE)
                 setAudioSource(MediaRecorder.AudioSource.DEFAULT)
-                //setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-//                setOrientationHint(90)
                 setProfile(profile)
-
-                setOutputFile(file.absolutePath)
-//                setVideoEncodingBitRate(profile.videoBitRate)
-//                setVideoFrameRate(profile.videoFrameRate)
+                setOutputFile(recordingFile)
                 setVideoSize(profile.videoFrameHeight, profile.videoFrameWidth)
-//                setVideoEncoder(profile.videoCodec)
+                setMaxDuration(MAX_DURATION_MS)
                 prepare()
             }
         }
     }
 
-    private fun buildFilename(): Boolean {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        videoPath = File(
-            videoDirectory, "$videoBaseName$timeStamp.mp4"
-        )
+    private fun buildFile(): File? {
         if (videoDirectory.exists().not()) {
             if (!videoDirectory.mkdirs()) {
                 Log.d(TAG, "failed to create directory")
-                return false
+                return null
             }
         }
-        Log.d(TAG, videoPath?.absolutePath ?: "video path is null")
-        return true
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val recordingFile = File(
+            videoDirectory, "$VIDEO_BASE_NAME$timeStamp.mp4"
+        )
+        Log.d(TAG, recordingFile.absolutePath ?: "recording file path is null")
+        return recordingFile
     }
 
     private fun stopRecordingVideo(): Result<Unit> {

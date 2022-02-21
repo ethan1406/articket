@@ -31,8 +31,7 @@ private const val MAX_DURATION_MS = 10000
 
 class VideoRecorder(
     private val sceneView: SceneView,
-    private val contentResolver: ContentResolver,
-    context: Context
+    private val fileDirectory: File
 ) {
     // recordingVideoFlag is true when the media recorder is capturing video.
     var isRecording = false
@@ -41,7 +40,7 @@ class VideoRecorder(
     private var mediaRecorder: MediaRecorder? = null
     private var videoSize: Size? = null
     private val videoDirectory = File(
-        context.filesDir, FileProviderConstants.FILE_NAME
+        fileDirectory, FileProviderConstants.FILE_NAME
     )
     var recordingFile: File? = null
 

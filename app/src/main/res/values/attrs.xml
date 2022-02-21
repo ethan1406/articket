@@ -63,4 +63,37 @@
         <attr name="strokeWidth" />
     </declare-styleable>
 
+    <!-- Shared attributes -->
+
+    <attr name="indicatorSize" format="dimension" />
+    <attr name="indicatorTint" format="color" />
+    <attr name="progressIndicatorTintMode">
+        <enum name="src_over" value="3" />
+        <enum name="src_in" value="5" />
+        <enum name="src_atop" value="9" />
+        <enum name="multiply" value="14" />
+        <enum name="screen" value="15" />
+        <enum name="add" value="16" />
+    </attr>
+
+    <!-- Circular Progress Indicator -->
+
+    <attr name="coreUiCircularProgressIndicatorStyle" format="reference" />
+
+    <declare-styleable name="CoreUiCircularProgressIndicator">
+        <attr name="indicatorSize" />
+        <attr name="indicatorTint" />
+        <attr name="progressIndicatorTintMode" />
+    </declare-styleable>
+
+    <!-- Linear Progress Indicator -->
+
+    <attr name="coreUiLinearProgressIndicatorStyle" format="reference" />
+
+    <declare-styleable name="CoreUiLinearProgressIndicator">
+        <attr name="indicatorSize" />
+        <attr name="indicatorTint" />
+        <attr name="progressIndicatorTintMode" />
+    </declare-styleable>
+
 </resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Circular Progress Indicator -->
+
+    <style name="CoreUiCircularProgressIndicator">
+        <item name="android:contentDescription">@string/progress_indicator_content_description</item>
+    </style>
+
+    <style name="CoreUiCircularProgressIndicator.Two">
+        <item name="indicatorSize">@dimen/design_core_ui_grid16</item>
+    </style>
+
+    <style name="CoreUiCircularProgressIndicator.Three">
+        <item name="indicatorSize">@dimen/design_core_ui_grid24</item>
+    </style>
+
+    <style name="CoreUiCircularProgressIndicator.Four">
+        <item name="indicatorSize">@dimen/design_core_ui_grid32</item>
+    </style>
+
+    <style name="CoreUiCircularProgressIndicator.Five">
+        <item name="indicatorSize">@dimen/design_core_ui_grid40</item>
+    </style>
+
+    <style name="CoreUiCircularProgressIndicator.Six">
+        <item name="indicatorSize">@dimen/design_core_ui_grid48</item>
+    </style>
+
+    <!-- Linear Progress Indicator -->
+
+    <style name="CoreUiLinearProgressIndicator">
+        <item name="android:contentDescription">@string/progress_indicator_content_description</item>
+    </style>
+
+    <style name="CoreUiLinearProgressIndicator.Focus">
+        <item name="indicatorSize">2dp</item>
+    </style>
+
+    <style name="CoreUiLinearProgressIndicator.Drive">
+        <item name="indicatorSize">4dp</item>
+    </style>
+
+</resources>

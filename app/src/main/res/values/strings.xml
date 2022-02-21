@@ -36,4 +36,9 @@
         translation_description="Message that appears in the toast when an error has occurred">
         Something went wrong. Please try again
     </string>
+    <string
+        name="progress_indicator_content_description"
+        translation_description="Accessibility label for an indeterminate loading indicator">
+        Loading
+    </string>
 </resources>

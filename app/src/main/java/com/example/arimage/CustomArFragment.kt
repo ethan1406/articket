@@ -4,12 +4,15 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
@@ -17,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.arimage.views.ArtistLinkAdapter
+import com.example.arimage.views.indicators.CircularProgressIndicator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.ar.core.Anchor
 import com.google.ar.core.AugmentedImage
@@ -32,13 +36,17 @@ import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-// TODO ask for permission
+// TODO ask for permission, remove tool bar, stylize views
 @AndroidEntryPoint
-class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
+class CustomArFragment: Fragment(),
     FragmentOnAttachListener,
     BaseArFragment.OnSessionConfigurationListener {
+
+    private val TAG = CustomArFragment::class.java.simpleName
 
     private val viewModel by viewModels<CustomArtViewModel>()
 
@@ -46,6 +54,9 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var arFragment: ArFragment
     @Inject lateinit var artistLinkAdapter: ArtistLinkAdapter
+
+    private lateinit var progressIndicator: CircularProgressIndicator
+    private lateinit var recordButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +68,18 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
         }
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.custom_ar_fragment, container, false)
+        progressIndicator = view.findViewById(R.id.progress_indicator)
+        recordButton = view.findViewById(R.id.record)
+        return view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.artistLinks.observe(viewLifecycleOwner) { artistLinkAdapter.submitList(it) }
         viewModel.openWebIntent.observe(viewLifecycleOwner) { openWebView(it.first, it.second) }
+        viewModel.isInitialLoading.observe(viewLifecycleOwner) { progressIndicator.isVisible = it }
     }
 
     override fun onPause() {
@@ -79,6 +98,12 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
     override fun onSessionConfiguration(session: Session, config: Config) {
         config.planeFindingMode = Config.PlaneFindingMode.DISABLED
         viewModel.setupAugmentedImagesDB(config, session)
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { arFragment.setSessionConfig(it, true) },
+                { Log.d(TAG, "Failed to create config") }
+            )
 
         arFragment.instructionsController = null
         // Check for image detection
@@ -110,8 +135,7 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
     }
 
     private fun setupRecordButton(videoRecorder: VideoRecorder) {
-        val recordButton = view?.findViewById<FloatingActionButton>(R.id.record)
-        recordButton?.setOnClickListener {
+        recordButton.setOnClickListener {
             toggleRecording(videoRecorder, recordButton)
         }
     }

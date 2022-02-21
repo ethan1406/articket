@@ -6,8 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
     tools:context=".MainActivity">
+
+    <com.example.arimage.views.indicators.CircularProgressIndicator
+        android:id="@+id/progress_indicator"
+        android:layout_margin="@dimen/design_core_ui_grid32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/CoreUiCircularProgressIndicator.Four"
+        android:elevation="1dp"
+        />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/arFragment"
@@ -26,7 +36,6 @@
         android:clickable="true"
         android:focusable="true"
         app:backgroundTint="?coreUiBrandInteractive"
-        app:elevation="1dp"
         android:layout_marginBottom="@dimen/design_core_ui_grid8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,6 +43,7 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/record_btn_start_a11y_action_label"
+        android:elevation="1dp"
         app:srcCompat="@drawable/round_videocam"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

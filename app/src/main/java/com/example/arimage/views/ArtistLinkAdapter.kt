@@ -4,14 +4,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.arimage.R
+import com.example.arimage.viewmodels.ArtistLinkViewModel
+import javax.inject.Inject
 
-internal class ArtistLinkAdapter(
+class ArtistLinkAdapter @Inject constructor(
     private val inflater: LayoutInflater
 ): ListAdapter<ArtistLinkViewModel, ArtistLinkViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistLinkViewHolder {
@@ -23,14 +24,8 @@ internal class ArtistLinkAdapter(
     }
 }
 
-internal data class ArtistLinkViewModel(
-    @DrawableRes val image: Int,
-    val text: String,
-    val onClick: (String) -> Unit,
-    val webLink: String
-)
 
-internal class ArtistLinkViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class ArtistLinkViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
     private val artistLinkButton = itemView.findViewById<ArtistLinkButton>(R.id.artist_link_button)
 

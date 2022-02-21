@@ -1,14 +1,11 @@
 package com.example.arimage
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
@@ -16,14 +13,13 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.arimage.views.ArtistLinkAdapter
-import com.example.arimage.views.ArtistLinkViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.ar.core.Anchor
 import com.google.ar.core.AugmentedImage
-import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
@@ -35,16 +31,21 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
-import java.io.IOException
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-// TODO create view model and ask for permission
+// TODO ask for permission
+@AndroidEntryPoint
 class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
     FragmentOnAttachListener,
     BaseArFragment.OnSessionConfigurationListener {
+
+    private val viewModel by viewModels<CustomArtViewModel>()
+
     private var isModelAdded = false
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var arFragment: ArFragment
-    private lateinit var artistLinkAdapter: ArtistLinkAdapter
+    @Inject lateinit var artistLinkAdapter: ArtistLinkAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +55,12 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
             add(R.id.arFragment, ArFragment())
             commit()
         }
+    }
 
-        initializeRecyclerViewAdapter()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.artistLinks.observe(viewLifecycleOwner) { artistLinkAdapter.submitList(it) }
+        viewModel.openWebIntent.observe(viewLifecycleOwner) { openWebView(it.first, it.second) }
     }
 
     override fun onPause() {
@@ -63,25 +68,17 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
         mediaPlayer?.pause()
     }
 
-    private fun initializeRecyclerViewAdapter() {
-        artistLinkAdapter = ArtistLinkAdapter(LayoutInflater.from(activity))
-    }
 
     override fun onAttachFragment(fragmentManager: FragmentManager, fragment: Fragment) {
         if (fragment.id == R.id.arFragment) {
             arFragment = fragment as ArFragment
-
             arFragment.setOnSessionConfigurationListener(this)
         }
     }
 
     override fun onSessionConfiguration(session: Session, config: Config) {
         config.planeFindingMode = Config.PlaneFindingMode.DISABLED
-
-//        if (setupAugmentedImagesDB(config, session)) Log.d("arcoreimg_db", "success") else Log.e(
-//            "arcoreimg_db",
-//            "faliure setting up db"
-//        )
+        viewModel.setupAugmentedImagesDB(config, session)
 
         arFragment.instructionsController = null
         // Check for image detection
@@ -89,30 +86,15 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
         initializeRecorder()
     }
 
-    private fun setupAugmentedImagesDB(config: Config, session: Session?): Boolean {
-        val bitmap: Bitmap = loadAugmentedImage() ?: return false
-        val augmentedImageDatabase = AugmentedImageDatabase(session)
-        augmentedImageDatabase.addImage("ticket", bitmap, 0.20f)
-        config.augmentedImageDatabase = augmentedImageDatabase
-        return true
-    }
-
-    private fun loadAugmentedImage(): Bitmap? {
-        try {
-            activity?.assets?.open("ticket.jpg").use { `is` -> return BitmapFactory.decodeStream(`is`) }
-        } catch (e: IOException) {
-            Log.e("arcoreimage", "io exception", e)
-        }
-        return null
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     private fun onAugmentedImageTrackingUpdate(augmentedImage: AugmentedImage) {
         if (augmentedImage.trackingState == TrackingState.TRACKING
             && augmentedImage.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
-            if (augmentedImage.name == "ticket" && isModelAdded.not()) {
-                createArtistArView(arFragment, augmentedImage.createAnchor(augmentedImage.centerPose), augmentedImage)
-                isModelAdded = true
+            if (isModelAdded.not()) {
+                viewModel.getVideoForImage(augmentedImage.name)?.let {
+                    createArtistArView(arFragment, augmentedImage.createAnchor(augmentedImage.centerPose), augmentedImage)
+                    isModelAdded = true
+                }
             }
         }
     }
@@ -121,8 +103,7 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
         activity?.let {
             val videoRecorder = VideoRecorder(
                 arFragment.arSceneView,
-                it.contentResolver,
-                it
+                it.filesDir
             )
             setupRecordButton(videoRecorder)
         }
@@ -146,20 +127,6 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
                 videoRecorder.recordingFile?.let {
                     navigateToPreviewAndEdit(it.absolutePath)
                 }
-
-//                val uri = Uri.fromFile(videoRecorder.recordingFile)
-//                recordButton.setImageResource(R.drawable.round_videocam)
-//                videoRecorder.videoPath?.absolutePath?.let {
-//                    Toast.makeText(this, "Video saved: $it", Toast.LENGTH_SHORT).show()
-//
-//                    // Send  notification of updated content.
-//                    val values = ContentValues()
-//                    values.put(MediaStore.Video.Media.TITLE, "Jackson Wang")
-//                    values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
-//
-//                    values.put(MediaStore.Video.Media.DATA, it)
-//                    contentResolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values)
-//                }
             }
         }
     }
@@ -169,7 +136,11 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
         findNavController().navigate(action)
     }
 
-    private fun createArtistArView(arFragment: ArFragment, anchor: Anchor, image: AugmentedImage) {
+    private fun createArtistArView(
+        arFragment: ArFragment,
+        anchor: Anchor,
+        image: AugmentedImage
+    ) {
         val anchorNode = AnchorNode(anchor)
         mediaPlayer = initializeMediaPlayer()
 
@@ -220,27 +191,9 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
                 Toast.makeText(activity, "Please try again", Toast.LENGTH_SHORT).show()
                 null
             }
-
-        artistLinkAdapter.submitList(
-            listOf(
-                ArtistLinkViewModel(
-                    image = R.drawable.team_wang,
-                    text = "Wang Merch",
-                    onClick = { openWebView(it) },
-                    webLink = "https://teamwangdesign.com/"
-                ),
-                ArtistLinkViewModel(
-                    image = R.drawable.bird,
-                    text = "Website",
-                    onClick = {},
-                    webLink = ""
-                )
-            )
-        )
     }
 
-    private fun openWebView(url: String) {
-        val customTabsIntent = createCustomTabIntent()
+    private fun openWebView(customTabsIntent: CustomTabsIntent, url: String) {
         try {
             activity?.let {
                 customTabsIntent.launchUrl(it, url.toUri())
@@ -249,11 +202,6 @@ class CustomArFragment: Fragment(R.layout.custom_ar_fragment),
             Toast.makeText(activity, "Please try again", Toast.LENGTH_SHORT).show()
         }
     }
-
-    private fun createCustomTabIntent(): CustomTabsIntent =
-        CustomTabsIntent.Builder()
-            .setShowTitle(true)
-            .build()
 
     private fun getScale(image: AugmentedImage, videoHeight: Int, videoWidth: Int): Vector3 {
         val imageHeight = 0.143f

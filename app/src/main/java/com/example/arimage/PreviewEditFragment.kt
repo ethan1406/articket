@@ -1,5 +1,6 @@
 package com.example.arimage
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -36,6 +37,19 @@ class PreviewEditFragment: Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+    }
+
+    private fun shareButtonHandler() {
+        activity?.let {
+            val contentUri = ContentUriProvider().getUriForFile(it, FileProviderConstants.AUTHORITY, File(args.filePath))
+            val sendIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_STREAM, contentUri)
+                type = "video/mp4"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
     }
 
     private fun startVideo(videoView: VideoView, uri: Uri) {

@@ -117,7 +117,7 @@ class CustomArFragment: Fragment(),
             && augmentedImage.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
             if (isModelAdded.not()) {
                 viewModel.getVideoForImage(augmentedImage.name)?.let {
-                    createArtistArView(arFragment, augmentedImage.createAnchor(augmentedImage.centerPose), augmentedImage)
+                    createArtistArView(arFragment, augmentedImage, it)
                     isModelAdded = true
                 }
             }
@@ -162,11 +162,11 @@ class CustomArFragment: Fragment(),
 
     private fun createArtistArView(
         arFragment: ArFragment,
-        anchor: Anchor,
-        image: AugmentedImage
+        augmentedImage: AugmentedImage,
+        videoRes: Int
     ) {
-        val anchorNode = AnchorNode(anchor)
-        mediaPlayer = initializeMediaPlayer()
+        val anchorNode = AnchorNode(augmentedImage.createAnchor(augmentedImage.centerPose))
+        mediaPlayer = initializeMediaPlayer(videoRes)
 
         mediaPlayer?.let { mediaPlayer ->
             val videoNode = VideoNode(
@@ -186,8 +186,8 @@ class CustomArFragment: Fragment(),
             }
             videoNode.parent = anchorNode
             videoNode.localRotation = Quaternion(Vector3(1f, 0f, 0f), -90f)
-            videoNode.localScale = getScale(image, mediaPlayer.videoHeight, mediaPlayer.videoWidth)
-            videoNode.localPosition = Vector3(0f, 0.007f, image.extentZ/2)
+            videoNode.localScale = getScale(augmentedImage, mediaPlayer.videoHeight, mediaPlayer.videoWidth)
+            videoNode.localPosition = Vector3(0f, 0.007f, augmentedImage.extentZ/2)
         }
         arFragment.arSceneView.scene.addChild(anchorNode)
 
@@ -206,8 +206,7 @@ class CustomArFragment: Fragment(),
                 node.renderable = it
                 node.parent = anchorNode
                 node.localRotation = Quaternion(Vector3(1f, 0f, 0f), -90f)
-                node.localPosition = Vector3(0f, 0f, image.extentZ)
-                //node.localScale = Vector3(0.05f,  0.01f, 1f)
+                node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ)
                 node.scaleController.minScale = 0.1f
                 node.scaleController.maxScale = 0.2f
             }
@@ -228,17 +227,14 @@ class CustomArFragment: Fragment(),
     }
 
     private fun getScale(image: AugmentedImage, videoHeight: Int, videoWidth: Int): Vector3 {
-        val imageHeight = 0.143f
-        val imageWidth = 0.20f
-
         val newVideoHeight = image.extentZ * 2
         val newVideoWidth = image.extentZ  * (videoWidth.toFloat()/videoHeight.toFloat())
 
         return Vector3(newVideoWidth, newVideoHeight, 1f)
     }
 
-    private fun initializeMediaPlayer(): MediaPlayer =
-        MediaPlayer.create(activity, R.raw.jackson).also {
+    private fun initializeMediaPlayer(videoRes: Int): MediaPlayer =
+        MediaPlayer.create(activity, videoRes).also {
             it.isLooping = true
         }
 }

@@ -6,4 +6,34 @@
         translation_description="Accessibility label for a loading button">
         Loading
     </string>
+    <string
+        name="ar_screen_label"
+        translation_description="Name of the ar screen">
+        Ar
+    </string>
+    <string
+        name="preview_edit_screen_label"
+        translation_description="Name of the screen that lets the user preview their recordings">
+        Preview
+    </string>
+    <string
+        name="share_btn_a11y_action_label"
+        translation_description="Label read to a11y users to share">
+        Share video
+    </string>
+    <string
+        name="record_btn_start_a11y_action_label"
+        translation_description="Label read to a11y users to start recording">
+        Record video
+    </string>
+    <string
+        name="record_btn_stop_a11y_action_label"
+        translation_description="Label read to a11y users to start recording">
+        Stop recording
+    </string>
+    <string
+        name="generic_error_message"
+        translation_description="Message that appears in the toast when an error has occurred">
+        Something went wrong. Please try again
+    </string>
 </resources>

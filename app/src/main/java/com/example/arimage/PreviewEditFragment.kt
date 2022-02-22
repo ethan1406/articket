@@ -3,6 +3,7 @@ package com.example.arimage
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,8 @@ import androidx.navigation.fragment.navArgs
 import java.io.File
 
 class PreviewEditFragment: Fragment() {
+    private val TAG = PreviewEditFragment::class.java.simpleName
+
     private val args by navArgs<PreviewEditFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,12 +33,17 @@ class PreviewEditFragment: Fragment() {
             findNavController().popBackStack()
         }
         shareButton.setOnClickListener {
-
+            shareButtonHandler()
         }
         return view
     }
 
     override fun onDestroyView() {
+        val file = File(args.filePath)
+        if (file.exists()) {
+            val didDelete = file.delete()
+            Log.d(TAG, "Deleting local video successfully was $didDelete")
+        }
         super.onDestroyView()
     }
 

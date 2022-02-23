@@ -155,7 +155,12 @@ class CustomArFragment: Fragment(),
         }
     }
 
+    private fun resetModel() {
+        isModelAdded = false
+    }
+
     private fun navigateToPreviewAndEdit(filePath: String) {
+        resetModel()
         val action = CustomArFragmentDirections.actionArFragmentToPreviewFragment(filePath)
         findNavController().navigate(action)
     }

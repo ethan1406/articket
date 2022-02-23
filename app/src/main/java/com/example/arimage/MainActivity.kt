@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     }
 
+    // delete recordings from previous sessions
     private fun deleteRecursive(fileOrDirectory: File) {
         if (fileOrDirectory.isDirectory) {
             fileOrDirectory.listFiles()?.toList()?.forEach { child ->

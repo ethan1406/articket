@@ -43,8 +43,8 @@ class CustomArtViewModel @Inject constructor(private val arImageRepository: ArIm
                     }
                     imageAndVideoMap.putIfAbsent(imageName, model.videoRes)
                 }
-                config.augmentedImageDatabase = augmentedImageDatabase
             }
+            config.augmentedImageDatabase = augmentedImageDatabase
             emitter.onSuccess(config)
         }
             .doOnSuccess {

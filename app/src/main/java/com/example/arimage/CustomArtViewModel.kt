@@ -6,11 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.arimage.data.ArImageRepository
 import com.example.arimage.viewmodels.ArtistLinkViewModel
+import com.example.arimage.viewmodels.RecordViewState
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.google.ar.core.Session
+import com.google.ar.sceneform.SceneView
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.subjects.ReplaySubject
+import java.io.File
 import javax.inject.Inject
 
 private const val IMAGE_NAME_LENGTH = 6
@@ -22,12 +27,17 @@ class CustomArtViewModel @Inject constructor(private val arImageRepository: ArIm
     val isInitialLoading = MutableLiveData(true)
     val artistLinks = MutableLiveData(listOf<ArtistLinkViewModel>())
     val openWebIntent = MutableLiveData<Pair<CustomTabsIntent, String>>()
+    val recordViewState = MutableLiveData<RecordViewState>()
+    val requestAudioPermission = MutableLiveData<Unit>()
+    val toastMessage = ReplaySubject<Unit>
 
+    private var videoRecorder: VideoRecorder? = null
     private var augmentedImageDatabase: AugmentedImageDatabase? = null
     private val imageAndVideoMap = mutableMapOf<String, Int>()
 
     init {
         loadArtistLinks()
+        toastMessage.postValue(Unit)
     }
 
     fun setupAugmentedImagesDB(config: Config, session: Session?): Single<Config> =
@@ -61,6 +71,36 @@ class CustomArtViewModel @Inject constructor(private val arImageRepository: ArIm
                 onClick = this::artistLinkOnClick
             )
         })
+    }
+
+    fun initializeRecorder(
+        sceneView: SceneView,
+        fileDirectory: File,
+        recordClicks: Observable<Boolean>
+    ) {
+        videoRecorder = VideoRecorder(sceneView, fileDirectory)
+
+        recordClicks.subscribe(
+            { hasAudioPermission ->
+                when (hasAudioPermission) {
+                    false -> requestAudioPermission.postValue(Unit)
+                    true -> startRecording()
+                }
+            },
+            { Log.d(TAG, "error with record clicks") }
+        )
+    }
+
+    fun startRecording() {
+        val recording = videoRecorder?.onToggleRecord()
+
+        recording?.onSuccess { isRecording ->
+            val state = when (isRecording) {
+                true -> RecordViewState.StartRecording
+                false -> RecordViewState.StopRecording(videoRecorder?.recordingFile)
+            }
+            recordViewState.postValue(state)
+        }
     }
 
     private fun artistLinkOnClick(link: String) =

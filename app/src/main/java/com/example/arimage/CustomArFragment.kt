@@ -1,5 +1,7 @@
 package com.example.arimage
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -9,8 +11,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -19,10 +23,10 @@ import androidx.fragment.app.FragmentOnAttachListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.arimage.viewmodels.RecordViewState
 import com.example.arimage.views.ArtistLinkAdapter
 import com.example.arimage.views.indicators.CircularProgressIndicator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.ar.core.Anchor
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Config
 import com.google.ar.core.Session
@@ -35,12 +39,12 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
+import com.jakewharton.rxbinding4.view.clicks
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-// TODO ask for permission
 @AndroidEntryPoint
 class CustomArFragment: Fragment(),
     FragmentOnAttachListener,
@@ -80,6 +84,24 @@ class CustomArFragment: Fragment(),
         viewModel.artistLinks.observe(viewLifecycleOwner) { artistLinkAdapter.submitList(it) }
         viewModel.openWebIntent.observe(viewLifecycleOwner) { openWebView(it.first, it.second) }
         viewModel.isInitialLoading.observe(viewLifecycleOwner) { progressIndicator.isVisible = it }
+        viewModel.requestAudioPermission.observe(viewLifecycleOwner) {
+            audioPermissionResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+        viewModel.toastMessage.observe(viewLifecycleOwner) {
+            Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+        }
+        viewModel.recordViewState.observe(viewLifecycleOwner) { viewState ->
+            when (viewState) {
+                is RecordViewState.StartRecording -> recordButton.setImageResource(R.drawable.round_stop)
+                is RecordViewState.StopRecording -> {
+                    recordButton.setImageResource(R.drawable.round_videocam)
+                    viewState.filePath?.let {
+                        mediaPlayer?.pause()
+                        navigateToPreviewAndEdit(it.absolutePath)
+                    }
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -125,34 +147,15 @@ class CustomArFragment: Fragment(),
     }
 
     private fun initializeRecorder() {
-        activity?.let {
-            val videoRecorder = VideoRecorder(
-                arFragment.arSceneView,
-                it.filesDir
+        activity?.let { activity ->
+            viewModel.initializeRecorder(
+                sceneView = arFragment.arSceneView,
+                fileDirectory = activity.filesDir,
+                recordClicks = recordButton.clicks()
+                    .map {
+                        ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+                    }
             )
-            setupRecordButton(videoRecorder)
-        }
-    }
-
-    private fun setupRecordButton(videoRecorder: VideoRecorder) {
-        recordButton.setOnClickListener {
-            toggleRecording(videoRecorder, recordButton)
-        }
-    }
-
-    // TODO this should be mvvm driven
-    private fun toggleRecording(videoRecorder: VideoRecorder, recordButton: FloatingActionButton) {
-        val recording = videoRecorder.onToggleRecord()
-
-        recording.onSuccess { isRecording ->
-            if (isRecording) {
-                recordButton.setImageResource(R.drawable.round_stop)
-            } else {
-                mediaPlayer?.pause()
-                videoRecorder.recordingFile?.let {
-                    navigateToPreviewAndEdit(it.absolutePath)
-                }
-            }
         }
     }
 
@@ -217,7 +220,7 @@ class CustomArFragment: Fragment(),
                 node.scaleController.maxScale = NodeConfig.viewMaxScale
             }
             .exceptionally {
-                Toast.makeText(activity, "Please try again", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
                 null
             }
     }
@@ -228,7 +231,7 @@ class CustomArFragment: Fragment(),
                 customTabsIntent.launchUrl(it, url.toUri())
             }
         } catch (e: Exception) {
-            Toast.makeText(activity, "Please try again", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -245,4 +248,14 @@ class CustomArFragment: Fragment(),
         }
 
     private fun flattenViewOnImage(): Quaternion = Quaternion(Vector3(1f, 0f, 0f), NodeConfig.flattenNodeOnImageRotation)
+
+    private val audioPermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            Log.d(TAG, "audio permission is granted: $isGranted")
+            if (isGranted) {
+                viewModel.startRecording()
+            } else {
+                Toast.makeText(activity, "Microphone permission is required for recording", Toast.LENGTH_LONG).show()
+            }
+        }
 }

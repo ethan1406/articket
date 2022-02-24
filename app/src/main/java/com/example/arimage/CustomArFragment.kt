@@ -40,7 +40,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
-// TODO ask for permission, remove tool bar, stylize views
+// TODO ask for permission
 @AndroidEntryPoint
 class CustomArFragment: Fragment(),
     FragmentOnAttachListener,
@@ -140,6 +140,7 @@ class CustomArFragment: Fragment(),
         }
     }
 
+    // TODO this should be mvvm driven
     private fun toggleRecording(videoRecorder: VideoRecorder, recordButton: FloatingActionButton) {
         val recording = videoRecorder.onToggleRecord()
 
@@ -190,9 +191,9 @@ class CustomArFragment: Fragment(),
                 }
             }
             videoNode.parent = anchorNode
-            videoNode.localRotation = Quaternion(Vector3(1f, 0f, 0f), -90f)
+            videoNode.localRotation = flattenViewOnImage()
             videoNode.localScale = getScale(augmentedImage, mediaPlayer.videoHeight, mediaPlayer.videoWidth)
-            videoNode.localPosition = Vector3(0f, 0.007f, augmentedImage.extentZ/2)
+            videoNode.localPosition = Vector3(0f, NodeConfig.videoZPostion, augmentedImage.extentZ/2)
         }
         arFragment.arSceneView.scene.addChild(anchorNode)
 
@@ -210,10 +211,10 @@ class CustomArFragment: Fragment(),
                 val node = TransformableNode(arFragment.transformationSystem)
                 node.renderable = it
                 node.parent = anchorNode
-                node.localRotation = Quaternion(Vector3(1f, 0f, 0f), -90f)
+                node.localRotation = flattenViewOnImage()
                 node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ)
-                node.scaleController.minScale = 0.1f
-                node.scaleController.maxScale = 0.2f
+                node.scaleController.minScale = NodeConfig.viewMinScale
+                node.scaleController.maxScale = NodeConfig.viewMaxScale
             }
             .exceptionally {
                 Toast.makeText(activity, "Please try again", Toast.LENGTH_SHORT).show()
@@ -242,4 +243,6 @@ class CustomArFragment: Fragment(),
         MediaPlayer.create(activity, videoRes).also {
             it.isLooping = true
         }
+
+    private fun flattenViewOnImage(): Quaternion = Quaternion(Vector3(1f, 0f, 0f), NodeConfig.flattenNodeOnImageRotation)
 }

@@ -9,3 +9,10 @@ object FileProviderConstants {
 object AssetConstants {
     const val artistImage = "ticket.jpg"
 }
+
+object NodeConfig {
+    const val flattenNodeOnImageRotation = -90f
+    const val videoZPostion = -0.007f
+    const val viewMinScale = 0.1f
+    const val viewMaxScale = 0.2f
+}

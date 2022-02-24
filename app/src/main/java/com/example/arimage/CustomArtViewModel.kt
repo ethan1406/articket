@@ -13,7 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
-private const val IMAGE_NAME_LENGTH = 4
+private const val IMAGE_NAME_LENGTH = 6
 
 @HiltViewModel
 class CustomArtViewModel @Inject constructor(private val arImageRepository: ArImageRepository): ViewModel() {

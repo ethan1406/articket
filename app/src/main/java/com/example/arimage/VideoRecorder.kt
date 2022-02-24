@@ -1,7 +1,5 @@
 package com.example.arimage
 
-import android.content.ContentResolver
-import android.content.Context
 import android.media.CamcorderProfile
 import android.media.MediaRecorder
 import android.util.Log
@@ -64,7 +62,7 @@ class VideoRecorder(
     private fun startRecordingVideo(): Result<Unit> {
         prepareVideoRecorder()
 
-        return kotlin.runCatching {
+        return runCatching {
             mediaRecorder?.start()
 
             // Set up Surface for the MediaRecorder
@@ -88,7 +86,7 @@ class VideoRecorder(
         val profile = getCamcorderProfile() ?: return Result.failure(Throwable())
         videoSize = Size(profile.videoFrameHeight, profile.videoFrameWidth)
 
-        return kotlin.runCatching {
+        return runCatching {
             mediaRecorder?.run {
                 setVideoSource(MediaRecorder.VideoSource.SURFACE)
                 setAudioSource(MediaRecorder.AudioSource.DEFAULT)

@@ -13,8 +13,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         deleteRecursive(File(this.filesDir, FileProviderConstants.FILE_NAME))
-        actionBar?.hide()
-
     }
 
     // delete recordings from previous sessions

@@ -13,6 +13,7 @@ import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.jakewharton.rxbinding4.view.clicks
 import java.io.File
 
 class PreviewEditFragment: Fragment() {
@@ -32,19 +33,12 @@ class PreviewEditFragment: Fragment() {
             Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
-        shareButton.setOnClickListener {
-            shareButtonHandler()
-        }
-        return view
-    }
+        shareButton.clicks()
+            .subscribe {
+                shareButtonHandler()
+            }
 
-    override fun onDestroyView() {
-        val file = File(args.filePath)
-        if (file.exists()) {
-            val didDelete = file.delete()
-            Log.d(TAG, "Deleting local video successfully was $didDelete")
-        }
-        super.onDestroyView()
+        return view
     }
 
     private fun shareButtonHandler() {

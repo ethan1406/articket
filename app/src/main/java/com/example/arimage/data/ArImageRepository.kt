@@ -11,7 +11,9 @@ import com.example.arimage.models.AugmentedImageBitmapModel
 import com.example.arimage.models.AugmentedImageModel
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ArImageRepository @Inject constructor(private val assets: AssetManager) {
     private val TAG = ArImageRepository::class.java.simpleName
 

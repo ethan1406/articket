@@ -1,4 +1,4 @@
-package com.example.arimage
+package com.example.arimage.modules
 
 import android.content.Context
 import android.view.LayoutInflater

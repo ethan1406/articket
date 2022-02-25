@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
@@ -17,12 +18,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.arimage.views.ArtistLinkAdapter
 import com.example.arimage.views.indicators.CircularProgressIndicator
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.ar.core.Anchor
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Config
 import com.google.ar.core.Session
@@ -36,8 +39,8 @@ import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 // TODO ask for permission
@@ -79,7 +82,23 @@ class CustomArFragment: Fragment(),
         super.onViewCreated(view, savedInstanceState)
         viewModel.artistLinks.observe(viewLifecycleOwner) { artistLinkAdapter.submitList(it) }
         viewModel.openWebIntent.observe(viewLifecycleOwner) { openWebView(it.first, it.second) }
-        viewModel.isInitialLoading.observe(viewLifecycleOwner) { progressIndicator.isVisible = it }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.arFragmentConfig.collect {
+                        it.config?.let { config ->
+                            arFragment.setSessionConfig(config, true)
+                        }
+                    }
+                }
+                launch {
+                    viewModel.isInitialLoading.collect {
+                        progressIndicator.isVisible = it
+                    }
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -96,15 +115,6 @@ class CustomArFragment: Fragment(),
     }
 
     override fun onSessionConfiguration(session: Session, config: Config) {
-        config.planeFindingMode = Config.PlaneFindingMode.DISABLED
-        viewModel.setupAugmentedImagesDB(config, session)
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                { arFragment.setSessionConfig(it, true) },
-                { Log.d(TAG, "Failed to create config") }
-            )
-
         arFragment.instructionsController = null
         // Check for image detection
         arFragment.setOnAugmentedImageUpdateListener(this::onAugmentedImageTrackingUpdate)
@@ -140,7 +150,6 @@ class CustomArFragment: Fragment(),
         }
     }
 
-    // TODO this should be mvvm driven
     private fun toggleRecording(videoRecorder: VideoRecorder, recordButton: FloatingActionButton) {
         val recording = videoRecorder.onToggleRecord()
 
@@ -225,6 +234,7 @@ class CustomArFragment: Fragment(),
     private fun openWebView(customTabsIntent: CustomTabsIntent, url: String) {
         try {
             activity?.let {
+
                 customTabsIntent.launchUrl(it, url.toUri())
             }
         } catch (e: Exception) {
@@ -245,4 +255,14 @@ class CustomArFragment: Fragment(),
         }
 
     private fun flattenViewOnImage(): Quaternion = Quaternion(Vector3(1f, 0f, 0f), NodeConfig.flattenNodeOnImageRotation)
+
+    private val audioPermissionResultLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            Log.d(TAG, "audio permission is granted: $isGranted")
+            if (isGranted) {
+
+            } else {
+                Toast.makeText(activity, "Microphone permission is required for recording", Toast.LENGTH_LONG).show()
+            }
+        }
 }

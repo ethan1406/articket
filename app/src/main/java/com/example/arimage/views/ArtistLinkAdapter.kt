@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +22,6 @@ class ArtistLinkAdapter @Inject constructor(
         holder.bind(getItem(position))
     }
 }
-
 
 class ArtistLinkViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 

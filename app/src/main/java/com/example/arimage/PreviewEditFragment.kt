@@ -13,7 +13,6 @@ import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.jakewharton.rxbinding4.view.clicks
 import java.io.File
 
 class PreviewEditFragment: Fragment() {
@@ -33,10 +32,9 @@ class PreviewEditFragment: Fragment() {
             Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
-        shareButton.clicks()
-            .subscribe {
-                shareButtonHandler()
-            }
+        shareButton.setOnClickListener {
+            shareButtonHandler()
+        }
 
         return view
     }

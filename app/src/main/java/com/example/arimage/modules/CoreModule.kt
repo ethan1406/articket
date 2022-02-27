@@ -1,4 +1,4 @@
-package com.example.arimage
+package com.example.arimage.modules
 
 import android.content.Context
 import android.content.res.AssetManager
@@ -11,7 +11,9 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object CoreModule {
+
     @Provides
     fun provideAssetManager(@ApplicationContext context: Context): AssetManager =
         context.assets
+
 }

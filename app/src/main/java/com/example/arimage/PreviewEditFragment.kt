@@ -20,11 +20,22 @@ class PreviewEditFragment: Fragment() {
 
     private val args by navArgs<PreviewEditFragmentArgs>()
 
+    private lateinit var videoView: VideoView
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.preview_edit_fragment, container, false)
-        val videoView = view.findViewById<VideoView>(R.id.video_view)
+        videoView = view.findViewById(R.id.video_view)
         val shareButton = view.findViewById<ImageButton>(R.id.share_btn)
 
+        shareButton.setOnClickListener {
+            shareButtonHandler()
+        }
+
+        return view
+    }
+
+    override fun onResume() {
+        super.onResume()
         val file = File(args.filePath)
         if (file.exists()) {
             startVideo(videoView, Uri.fromFile(file))
@@ -32,11 +43,6 @@ class PreviewEditFragment: Fragment() {
             Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
-        shareButton.setOnClickListener {
-            shareButtonHandler()
-        }
-
-        return view
     }
 
     private fun shareButtonHandler() {
@@ -53,8 +59,20 @@ class PreviewEditFragment: Fragment() {
     }
 
     private fun startVideo(videoView: VideoView, uri: Uri) {
-        videoView.setVideoURI(uri)
-        videoView.start()
-        videoView.setOnPreparedListener { mediaPlayer -> mediaPlayer.isLooping = true }
+        with(videoView) {
+            setOnPreparedListener { mediaPlayer ->
+                val videoRatio = mediaPlayer.videoWidth / mediaPlayer.videoHeight.toFloat()
+                val screenRatio = videoView.width / videoView.height.toFloat()
+                val scaleX = videoRatio / screenRatio
+                if (scaleX >= 1f) {
+                    videoView.scaleX = scaleX
+                } else {
+                    videoView.scaleY = 1f / scaleX
+                }
+                mediaPlayer.isLooping = true
+            }
+            setVideoURI(uri)
+            start()
+        }
     }
 }

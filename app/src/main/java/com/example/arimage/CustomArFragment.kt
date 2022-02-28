@@ -46,6 +46,7 @@ import com.google.ar.sceneform.ux.VideoNode
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -75,6 +76,11 @@ class CustomArFragment: Fragment(),
             add(R.id.arFragment, ArFragment())
             commit()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        deleteRecursive(File(requireActivity().filesDir, FileProviderConstants.FILE_NAME))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,8 +117,11 @@ class CustomArFragment: Fragment(),
     }
 
     override fun onPause() {
-        super.onPause()
         mediaPlayer?.pause()
+        if (videoRecorder.isRecording) {
+            videoRecorder.onToggleRecord()
+        }
+        super.onPause()
     }
 
     private fun ArtistLinkModel.toViewModel(): ArtistLinkViewModel =
@@ -299,4 +308,15 @@ class CustomArFragment: Fragment(),
                 Toast.makeText(activity, "Microphone permission is required for recording", Toast.LENGTH_LONG).show()
             }
         }
+
+    // delete recordings from previous sessions
+    private fun deleteRecursive(fileOrDirectory: File) {
+        if (fileOrDirectory.isDirectory) {
+            fileOrDirectory.listFiles()?.toList()?.forEach { child ->
+                Log.d(TAG, "deleting file with path ${child.absolutePath}")
+                deleteRecursive(child)
+            }
+        }
+        fileOrDirectory.delete()
+    }
 }

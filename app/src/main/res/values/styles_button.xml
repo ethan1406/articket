@@ -68,7 +68,7 @@
         <item name="android:hapticFeedbackEnabled">false</item>
         <item name="progressIndicatorTint">?coreUiIconPrimaryInverse</item>
         <item name="rippleColor">@color/design_core_ui_pressed_medium</item>
-        <item name="backgroundTint">@color/black</item>
+        <item name="backgroundTint">?coreUiBrandInteractive</item>
         <item name="backgroundTintModeValue">src_over</item>
         <item name="timerTint">@color/design_core_ui_components_button_primary_timer</item>
     </style>

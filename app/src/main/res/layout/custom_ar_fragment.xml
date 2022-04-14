@@ -29,13 +29,13 @@
         android:layout_height="0dp"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <ImageButton
         android:id="@+id/record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="?coreUiBrandInteractive"
+        android:background="@android:color/transparent"
         android:layout_marginBottom="@dimen/design_core_ui_grid8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,6 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/record_btn_start_a11y_action_label"
         android:elevation="1dp"
-        app:srcCompat="@drawable/round_videocam"/>
+        app:srcCompat="@drawable/ic_record"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -30,7 +31,6 @@ import com.example.arimage.models.ArtistLinkModel
 import com.example.arimage.viewmodels.ArtistLinkViewModel
 import com.example.arimage.views.ArtistLinkAdapter
 import com.example.arimage.views.indicators.CircularProgressIndicator
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Config
 import com.google.ar.core.Session
@@ -64,7 +64,7 @@ class CustomArFragment: Fragment(),
     @Inject lateinit var artistLinkAdapter: ArtistLinkAdapter
 
     private lateinit var progressIndicator: CircularProgressIndicator
-    private lateinit var recordButton: FloatingActionButton
+    private lateinit var recordButton: ImageButton
 
     private lateinit var videoRecorder: VideoRecorder
 
@@ -142,6 +142,7 @@ class CustomArFragment: Fragment(),
 
     override fun onSessionConfiguration(session: Session, config: Config) {
         arFragment.instructionsController = null
+        arFragment.arSceneView.planeRenderer.isVisible = false
         viewModel.setupArtistImageDatabase(session, config)
         // Check for image detection
         arFragment.setOnAugmentedImageUpdateListener(this::onAugmentedImageTrackingUpdate)
@@ -227,6 +228,7 @@ class CustomArFragment: Fragment(),
                 null,
                 null
             )
+
             videoNode.setOnTapListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     if(mediaPlayer.isPlaying) {
@@ -258,7 +260,7 @@ class CustomArFragment: Fragment(),
                 node.renderable = it
                 node.parent = anchorNode
                 node.localRotation = flattenViewOnImage()
-                node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ)
+                node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ * 1.1f)
                 node.scaleController.minScale = NodeConfig.viewMinScale
                 node.scaleController.maxScale = NodeConfig.viewMaxScale
             }

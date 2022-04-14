@@ -7,12 +7,14 @@ object FileProviderConstants {
 
 
 object AssetConstants {
-    const val artistImage = "ticket.jpg"
+    const val jacksonImage = "ticket.jpg"
+    const val WEDDING_COVER_IMAGE = "wedding_invitation_cover.jpg"
+    const val fredImage = "fred_ticket_ar.jpg"
 }
 
 object NodeConfig {
     const val flattenNodeOnImageRotation = -90f
     const val videoZPostion = -0.007f
-    const val viewMinScale = 0.1f
-    const val viewMaxScale = 0.2f
+    const val viewMinScale = 0.10f
+    const val viewMaxScale = 0.15f
 }

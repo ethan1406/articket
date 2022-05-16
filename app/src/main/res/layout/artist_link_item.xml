@@ -4,7 +4,7 @@
     android:layout_marginHorizontal="10dp"
     android:id="@+id/artist_link_button"
     android:layout_width="wrap_content"
-    android:layout_height="55dp"
-    app:icon="@drawable/ic_spotify"
-    android:text="New song"
+    android:layout_height="wrap_content"
+    app:icon="@drawable/ic_gallery"
+    android:text="Our website"
     style="@style/CoreUiButton.Focus.Compact.Primary"/>

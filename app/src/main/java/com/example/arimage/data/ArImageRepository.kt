@@ -48,10 +48,43 @@ class ArImageRepository @Inject constructor(private val assets: AssetManager) {
             )
         )
 
+    fun getWeddingLinks(): List<ArtistLinkModel> =
+        listOf(
+            ArtistLinkModel(
+                image = R.drawable.ic_instagram,
+                text = "Wedding pics",
+                webLink = ""
+            ),
+            ArtistLinkModel(
+                image = R.drawable.ic_link,
+                text = "Our Website",
+                webLink = "https://www.zola.com/wedding/phoebeandethan2022"
+            ),
+
+            ArtistLinkModel(
+                image = R.drawable.ic_link,
+                text = "Registry",
+                webLink = "https://www.zola.com/wedding/phoebeandethan2022"
+            ),
+            ArtistLinkModel(
+                image = R.drawable.ic_gallery,
+                text = "Gallery",
+                webLink = "https://www.zola.com/wedding/phoebeandethan2022"
+            ),
+            ArtistLinkModel(
+                image = R.drawable.ic_calendar,
+                text = "Schedule",
+                webLink = "https://www.zola.com/wedding/phoebeandethan2022"
+            )
+        )
+
     private fun getLocalArImageAndVideoPairs(): List<AugmentedImageModel> =
         listOf(
             //AugmentedImageModel(AssetConstants.jacksonImage, R.raw.jackson, 0.20f),
-            AugmentedImageModel(AssetConstants.fredImage, R.raw.fred, 0.10f),
-            AugmentedImageModel(AssetConstants.WEDDING_COVER_IMAGE, R.raw.wedding_card, 0.20f),
+//            AugmentedImageModel(AssetConstants.fredImage, R.raw.fred, 0.10f),
+//            AugmentedImageModel(AssetConstants.WEDDING_COVER_IMAGE, R.raw.wedding_card, 0.14f),
+//            AugmentedImageModel(AssetConstants.WEDDING_COVER_IMAGE_2, R.raw.wedding_card, 0.109f),
+//            AugmentedImageModel(AssetConstants.WEDDING_COVER_IMAGE_3, R.raw.wedding_card, 0.129f),
+            AugmentedImageModel(AssetConstants.WEDDING_COVER_IMAGE_4, R.raw.wedding_card, 0.129f),
         )
 }

@@ -66,7 +66,7 @@ class CustomArFragment: Fragment(),
     private lateinit var progressIndicator: CircularProgressIndicator
     private lateinit var recordButton: ImageButton
 
-    private lateinit var videoRecorder: VideoRecorder
+    private var videoRecorder: VideoRecorder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,8 +118,8 @@ class CustomArFragment: Fragment(),
 
     override fun onPause() {
         mediaPlayer?.pause()
-        if (videoRecorder.isRecording) {
-            videoRecorder.onToggleRecord()
+        if (videoRecorder?.isRecording == true) {
+            videoRecorder?.onToggleRecord()
         }
         super.onPause()
     }
@@ -185,20 +185,20 @@ class CustomArFragment: Fragment(),
     }
 
     private fun toggleRecording() {
-        val recording = videoRecorder.onToggleRecord()
+        val recording = videoRecorder?.onToggleRecord()
 
-        recording.onSuccess { isRecording ->
+        recording?.onSuccess { isRecording ->
             if (isRecording) {
                 recordButton.setImageResource(R.drawable.round_stop)
             } else {
                 mediaPlayer?.pause()
-                videoRecorder.recordingFile?.let {
+                videoRecorder?.recordingFile?.let {
                     navigateToPreviewAndEdit(it.absolutePath)
                 }
             }
         }
 
-        recording.onFailure {
+        recording?.onFailure {
             Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
         }
     }
@@ -221,6 +221,7 @@ class CustomArFragment: Fragment(),
         val anchorNode = AnchorNode(augmentedImage.createAnchor(augmentedImage.centerPose))
         mediaPlayer = initializeMediaPlayer(videoRes)
 
+        // TODO handle media player loading
         mediaPlayer?.let { mediaPlayer ->
             val videoNode = VideoNode(
                 activity,
@@ -260,7 +261,9 @@ class CustomArFragment: Fragment(),
                 node.renderable = it
                 node.parent = anchorNode
                 node.localRotation = flattenViewOnImage()
-                node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ * 1.1f)
+                node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ * 0.9f)
+                node.rotationController.isEnabled = false
+                node.translationController.isEnabled = false
                 node.scaleController.minScale = NodeConfig.viewMinScale
                 node.scaleController.maxScale = NodeConfig.viewMaxScale
             }
@@ -271,7 +274,7 @@ class CustomArFragment: Fragment(),
     }
 
     private fun openWebView(url: String) {
-        if (videoRecorder.isRecording.not()) {
+        if (videoRecorder?.isRecording == false) {
             try {
                 activity?.let {
                     CustomTabsIntent.Builder()

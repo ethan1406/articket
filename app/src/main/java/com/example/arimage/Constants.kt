@@ -9,6 +9,9 @@ object FileProviderConstants {
 object AssetConstants {
     const val jacksonImage = "ticket.jpg"
     const val WEDDING_COVER_IMAGE = "wedding_invitation_cover.jpg"
+    const val WEDDING_COVER_IMAGE_2 = "wedding_invitation_cover_2.jpg"
+    const val WEDDING_COVER_IMAGE_3 = "wedding_invitation_cover_3.jpg"
+    const val WEDDING_COVER_IMAGE_4 = "wedding_invitation_cover_4.jpg"
     const val fredImage = "fred_ticket_ar.jpg"
 }
 

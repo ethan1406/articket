@@ -54,7 +54,7 @@ class CustomArtViewModel @Inject constructor(
     }
 
     private fun loadArtistLinks() {
-        _artistLinks.value = (arImageRepository.getArtistLinks().map {
+        _artistLinks.value = (arImageRepository.getWeddingLinks().map {
             ArtistLinkModel(
                 image = it.image,
                 text = it.text,

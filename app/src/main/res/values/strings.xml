@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">arimage</string>
+    <string name="app_name">Truffle AR</string>
 
     <string
         name="button_loading_content_description"

@@ -71,7 +71,6 @@ class CustomArFragment: Fragment(),
     private lateinit var recordButton: RecordButton
     private var videoRecorder: VideoRecorder? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arFragment = ArFragment()
@@ -177,6 +176,7 @@ class CustomArFragment: Fragment(),
     }
 
     private fun setupRecordButton() {
+        recordButton.maxMilisecond = MAX_DURATION_MS
         recordButton.setRecordListener(object : OnRecordListener {
             override fun onRecord() {
                 if (videoRecorder?.isRecording == false) {
@@ -284,7 +284,7 @@ class CustomArFragment: Fragment(),
                 node.scaleController.maxScale = NodeConfig.viewMaxScale
             }
             .exceptionally {
-                Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
                 null
             }
     }
@@ -299,10 +299,10 @@ class CustomArFragment: Fragment(),
                         .launchUrl(it, url.toUri())
                 }
             } catch (e: Exception) {
-                Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(activity, "Please tap when you are not recording", Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, resources.getString(R.string.link_button_tap_while_recording_error_message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -322,11 +322,10 @@ class CustomArFragment: Fragment(),
 
     private val audioPermissionResultLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            Log.d(TAG, "audio permission is granted: $isGranted")
             if (isGranted) {
                 toggleRecording()
             } else {
-                Toast.makeText(activity, "Microphone permission is required for recording", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, resources.getString(R.string.microphone_permission_required_error_message), Toast.LENGTH_LONG).show()
             }
         }
 

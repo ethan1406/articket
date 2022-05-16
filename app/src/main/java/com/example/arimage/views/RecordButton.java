@@ -73,6 +73,7 @@ public class RecordButton extends View implements Animatable {
     private int recordIcon;
 
     private boolean isRecording = false;
+    private boolean didTriggerOnRecord = false;
 
     private int currentMiliSecond = 0;
     private int maxMilisecond;
@@ -261,15 +262,24 @@ public class RecordButton extends View implements Animatable {
 
                 if (isRecording) {
                     setCurrentMiliSecond(value);
-                    if (recordListener != null) recordListener.onRecord();
+                    if (recordListener != null && !didTriggerOnRecord) {
+                        recordListener.onRecord();
+                        didTriggerOnRecord = true;
+                    }
                 } else {
                     animation.cancel();
                     isRecording = false;
-                    if (recordListener != null) recordListener.onRecordCancel();
+                    if (recordListener != null) {
+                        recordListener.onRecordCancel();
+                        didTriggerOnRecord = false;
+                    }
                 }
 
                 if (value == maxMilisecond) {
-                    if (recordListener != null) recordListener.onRecordFinish();
+                    if (recordListener != null) {
+                        recordListener.onRecordFinish();
+                        didTriggerOnRecord = false;
+                    }
                     stop();
                 }
             }

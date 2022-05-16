@@ -33,7 +33,6 @@
         android:id="@+id/record"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:maxMilisecond="15000"
         app:buttonGap="10dp"
         app:buttonRadius="25dp"
         app:progressStroke="15"

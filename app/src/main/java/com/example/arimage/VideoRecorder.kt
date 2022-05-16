@@ -25,7 +25,7 @@ private val QUALITY_LEVELS = listOf(
 )
 
 private const val VIDEO_BASE_NAME = "artist"
-private const val MAX_DURATION_MS = 10000
+const val MAX_DURATION_MS = 15000
 
 class VideoRecorder(
     private val sceneView: SceneView,

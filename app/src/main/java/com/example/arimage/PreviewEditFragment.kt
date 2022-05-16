@@ -26,6 +26,11 @@ class PreviewEditFragment: Fragment() {
         val view = inflater.inflate(R.layout.preview_edit_fragment, container, false)
         videoView = view.findViewById(R.id.video_view)
         val shareButton = view.findViewById<ImageButton>(R.id.share_btn)
+        val backButton = view.findViewById<ImageButton>(R.id.back_btn)
+
+        backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         shareButton.setOnClickListener {
             shareButtonHandler()

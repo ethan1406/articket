@@ -37,8 +37,18 @@
         Something went wrong. Please try again
     </string>
     <string
+        name="link_button_tap_while_recording_error_message"
+        translation_description="Message that appears in the toast when a link button is tapped while the user is recording.">
+        Buttons don\'t work when you are recording
+    </string>
+    <string
         name="progress_indicator_content_description"
         translation_description="Accessibility label for an indeterminate loading indicator">
         Loading
+    </string>
+    <string
+        name="microphone_permission_required_error_message"
+        translation_description="Message that appears in the toast when user attempts to record nad has not given microphone permission">
+        Microphone permission is required for recording
     </string>
 </resources>

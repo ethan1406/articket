@@ -24,7 +24,7 @@ class ArtistImageDatabase @Inject constructor(
         session: Session,
         artistImages: List<AugmentedImageBitmapModel>,
     ): Config {
-        if (augmentedImageDatabase != null) {
+        augmentedImageDatabase?.let {
             config.augmentedImageDatabase = augmentedImageDatabase
             return config
         }

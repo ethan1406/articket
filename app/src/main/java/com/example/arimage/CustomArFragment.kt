@@ -30,6 +30,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.arimage.models.ArtistLinkModel
 import com.example.arimage.viewmodels.ArtistLinkViewModel
 import com.example.arimage.views.ArtistLinkAdapter
+import com.example.arimage.views.OnRecordListener
+import com.example.arimage.views.RecordButton
 import com.example.arimage.views.indicators.CircularProgressIndicator
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.Config
@@ -64,9 +66,11 @@ class CustomArFragment: Fragment(),
     @Inject lateinit var artistLinkAdapter: ArtistLinkAdapter
 
     private lateinit var progressIndicator: CircularProgressIndicator
-    private lateinit var recordButton: ImageButton
 
+    // Recording
+    private lateinit var recordButton: RecordButton
     private var videoRecorder: VideoRecorder? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -173,7 +177,21 @@ class CustomArFragment: Fragment(),
     }
 
     private fun setupRecordButton() {
-        recordButton.setOnClickListener { handleMicrophonePermission() }
+        recordButton.setRecordListener(object : OnRecordListener {
+            override fun onRecord() {
+                if (videoRecorder?.isRecording == false) {
+                    handleMicrophonePermission()
+                }
+            }
+
+            override fun onRecordCancel() {
+                toggleRecording()
+            }
+
+            override fun onRecordFinish() {
+                toggleRecording()
+            }
+        })
     }
 
     private fun handleMicrophonePermission() {
@@ -188,9 +206,7 @@ class CustomArFragment: Fragment(),
         val recording = videoRecorder?.onToggleRecord()
 
         recording?.onSuccess { isRecording ->
-            if (isRecording) {
-                recordButton.setImageResource(R.drawable.round_stop)
-            } else {
+            if (isRecording.not()) {
                 mediaPlayer?.pause()
                 videoRecorder?.recordingFile?.let {
                     navigateToPreviewAndEdit(it.absolutePath)

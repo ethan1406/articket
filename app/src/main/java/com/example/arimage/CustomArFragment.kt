@@ -199,17 +199,22 @@ class CustomArFragment: Fragment(),
             }
 
             override fun onRecordCancel() {
-                toggleRecording()
+                if (videoRecorder?.isRecording == true) {
+                    toggleRecording()
+                }
             }
 
             override fun onRecordFinish() {
-                toggleRecording()
+                if (videoRecorder?.isRecording == true) {
+                    toggleRecording()
+                }
             }
         })
     }
 
     private fun handleMicrophonePermission() {
-        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
+        val permission = ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.RECORD_AUDIO)
+        if (permission != PackageManager.PERMISSION_GRANTED) {
             audioPermissionResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
         } else {
             toggleRecording()
@@ -336,9 +341,7 @@ class CustomArFragment: Fragment(),
 
     private val audioPermissionResultLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                toggleRecording()
-            } else {
+            if (isGranted.not()) {
                 Toast.makeText(activity, resources.getString(R.string.microphone_permission_required_error_message), Toast.LENGTH_LONG).show()
             }
         }

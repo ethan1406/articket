@@ -8,6 +8,24 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/tutorial_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/design_core_ui_grid24"
+        android:paddingVertical="@dimen/design_core_ui_grid4"
+        android:paddingHorizontal="@dimen/design_core_ui_grid16"
+        android:background="@drawable/round_corners"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/progress_indicator"
+        app:layout_constraintBottom_toBottomOf="@+id/progress_indicator"
+        app:layout_constraintEnd_toStartOf="@+id/progress_indicator"
+        tools:text="Look around to detect wedding card"
+        android:elevation="1dp"
+        />
+
     <com.example.arimage.views.indicators.CircularProgressIndicator
         android:id="@+id/progress_indicator"
         android:layout_margin="@dimen/design_core_ui_grid32"

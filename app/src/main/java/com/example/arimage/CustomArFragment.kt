@@ -10,14 +10,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
@@ -46,7 +44,6 @@ import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -69,6 +66,8 @@ class CustomArFragment: Fragment(),
 
     // Recording
     private lateinit var recordButton: RecordButton
+    private lateinit var tutorialTextPresenter: TutorialTextPresenter
+
     private var videoRecorder: VideoRecorder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +89,12 @@ class CustomArFragment: Fragment(),
         val view = inflater.inflate(R.layout.custom_ar_fragment, container, false)
         progressIndicator = view.findViewById(R.id.progress_indicator)
         recordButton = view.findViewById(R.id.record)
+        tutorialTextPresenter = TutorialTextPresenter(
+            tutorialTextView = view.findViewById(R.id.tutorial_text),
+            countDownTimer = DefaultCountDownTimer(),
+            resources = resources
+        )
+
         return view
     }
 
@@ -107,7 +112,11 @@ class CustomArFragment: Fragment(),
                 }
                 launch {
                     viewModel.isInitialLoading.collect {
-                        progressIndicator.isVisible = it
+                        progressIndicator.visibility = if (it) {
+                            View.VISIBLE
+                        } else {
+                            View.INVISIBLE
+                        }
                     }
                 }
                 launch {
@@ -158,11 +167,16 @@ class CustomArFragment: Fragment(),
             && augmentedImage.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
             if (isModelAdded.not()) {
                 viewModel.getVideoForImage(augmentedImage.name)?.let {
+                    showImageDetectedMessage()
                     createArtistArView(arFragment, augmentedImage, it)
                     isModelAdded = true
                 }
             }
         }
+    }
+
+    private fun showImageDetectedMessage() {
+        tutorialTextPresenter.showMessage(resources.getString(R.string.image_detected_message))
     }
 
     private fun initializeRecorder() {

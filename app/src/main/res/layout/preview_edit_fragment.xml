@@ -26,7 +26,7 @@
         android:layout_marginTop="@dimen/design_core_ui_grid24"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/share_btn_a11y_action_label"
+        android:contentDescription="@string/dismiss_btn_a11y_action_label"
         />
 
     <ImageButton
@@ -34,13 +34,12 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/circular_btn_background"
-        android:tint="@color/white"
         android:src="@drawable/arrow_left"
         android:layout_marginStart="@dimen/design_core_ui_grid24"
         android:layout_marginTop="@dimen/design_core_ui_grid24"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/share_btn_a11y_action_label"
-        />
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

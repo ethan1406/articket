@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="design_core_ui_grid2">2dp</dimen>
+    <dimen name="design_core_ui_grid4">4dp</dimen>
     <dimen name="design_core_ui_grid8">8dp</dimen>
     <dimen name="design_core_ui_grid16">16dp</dimen>
     <dimen name="design_core_ui_grid24">24dp</dimen>

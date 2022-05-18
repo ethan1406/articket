@@ -10,7 +10,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.arimage"
+        applicationId "com.trufflear.trufflear"
         minSdk 29
         targetSdk 31
         versionCode 1

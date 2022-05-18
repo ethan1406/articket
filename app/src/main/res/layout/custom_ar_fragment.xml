@@ -26,7 +26,7 @@
         android:elevation="1dp"
         />
 
-    <com.example.arimage.views.indicators.CircularProgressIndicator
+    <com.trufflear.trufflear.views.indicators.CircularProgressIndicator
         android:id="@+id/progress_indicator"
         android:layout_margin="@dimen/design_core_ui_grid32"
         android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
         android:layout_height="0dp"
         />
 
-    <com.example.arimage.views.RecordButton
+    <com.trufflear.trufflear.views.RecordButton
         android:id="@+id/record"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

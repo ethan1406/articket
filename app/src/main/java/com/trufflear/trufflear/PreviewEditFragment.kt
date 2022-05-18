@@ -13,7 +13,10 @@ import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bugsnag.android.Bugsnag
+import com.google.firebase.analytics.FirebaseAnalytics
 import java.io.File
+import java.lang.Exception
 
 class PreviewEditFragment: Fragment() {
     private val TAG = PreviewEditFragment::class.java.simpleName
@@ -29,10 +32,12 @@ class PreviewEditFragment: Fragment() {
         val backButton = view.findViewById<ImageButton>(R.id.back_btn)
 
         backButton.setOnClickListener {
+            FirebaseAnalytics.getInstance(requireContext()).logEvent("preview_edit_dismiss_button_tapped", null)
             findNavController().popBackStack()
         }
 
         shareButton.setOnClickListener {
+            FirebaseAnalytics.getInstance(requireContext()).logEvent("preview_edit_share_button_tapped", null)
             shareButtonHandler()
         }
 
@@ -47,9 +52,12 @@ class PreviewEditFragment: Fragment() {
                 startVideo(videoView, Uri.fromFile(file))
             }
         } else {
+            Bugsnag.notify(Exception("video file does not exist"))
             Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
+
+        FirebaseAnalytics.getInstance(requireContext()).logEvent("preview_edit_screen_viewed", null)
     }
 
     private fun shareButtonHandler() {

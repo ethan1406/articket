@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bugsnag.android.Bugsnag
 import com.trufflear.trufflear.CustomArFragmentDirections
 import com.trufflear.trufflear.models.ArtistLinkModel
 import com.trufflear.trufflear.viewmodels.ArtistLinkViewModel
@@ -43,6 +44,7 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.trufflear.trufflear.views.RecordButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -83,6 +85,7 @@ class CustomArFragment: Fragment(),
 
     override fun onResume() {
         super.onResume()
+        FirebaseAnalytics.getInstance(requireContext()).logEvent("home_screen_viewed", null)
         deleteRecursive(File(requireActivity().filesDir, FileProviderConstants.FILE_NAME))
     }
 
@@ -201,12 +204,14 @@ class CustomArFragment: Fragment(),
 
             override fun onRecordCancel() {
                 if (videoRecorder?.isRecording == true) {
+                    FirebaseAnalytics.getInstance(requireContext()).logEvent("stop_recording", null)
                     toggleRecording()
                 }
             }
 
             override fun onRecordFinish() {
                 if (videoRecorder?.isRecording == true) {
+                    FirebaseAnalytics.getInstance(requireContext()).logEvent("stop_recording", null)
                     toggleRecording()
                 }
             }
@@ -218,6 +223,11 @@ class CustomArFragment: Fragment(),
         if (permission != PackageManager.PERMISSION_GRANTED) {
             audioPermissionResultLauncher.launch(Manifest.permission.RECORD_AUDIO)
         } else {
+            FirebaseAnalytics.getInstance(requireContext()).logEvent("start_recording",
+                Bundle().apply {
+                    putString("microphone_permission_status", "granted")
+                }
+            )
             toggleRecording()
         }
     }
@@ -236,6 +246,7 @@ class CustomArFragment: Fragment(),
 
         recording?.onFailure {
             Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+            Bugsnag.notify(it)
         }
     }
 
@@ -279,6 +290,12 @@ class CustomArFragment: Fragment(),
             videoNode.localRotation = flattenViewOnImage()
             videoNode.localScale = getScale(augmentedImage, mediaPlayer.videoHeight, mediaPlayer.videoWidth)
             videoNode.localPosition = Vector3(0f, NodeConfig.videoZPostion, augmentedImage.extentZ/2)
+
+            FirebaseAnalytics.getInstance(requireContext()).logEvent("video_viewed",
+                Bundle().apply {
+                    putString("type", "local")
+                }
+            )
         }
         arFragment.arSceneView.scene.addChild(anchorNode)
 
@@ -302,14 +319,27 @@ class CustomArFragment: Fragment(),
                 node.translationController.isEnabled = false
                 node.scaleController.minScale = NodeConfig.viewMinScale
                 node.scaleController.maxScale = NodeConfig.viewMaxScale
+
+                FirebaseAnalytics.getInstance(requireContext()).logEvent("attachment_links_viewed",
+                    Bundle().apply {
+                        putString("type", "local")
+                        putInt("count", artistLinkAdapter.itemCount)
+                    }
+                )
             }
             .exceptionally {
                 Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+                Bugsnag.notify(it)
                 null
             }
     }
 
     private fun openWebView(url: String) {
+        FirebaseAnalytics.getInstance(requireContext()).logEvent("attachment_link_button_tapped",
+            Bundle().apply {
+                putString("url", url)
+            }
+        )
         if (videoRecorder?.isRecording == false) {
             try {
                 activity?.let {
@@ -320,6 +350,7 @@ class CustomArFragment: Fragment(),
                 }
             } catch (e: Exception) {
                 Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+                Bugsnag.notify(e)
             }
         } else {
             Toast.makeText(activity, resources.getString(R.string.link_button_tap_while_recording_error_message), Toast.LENGTH_SHORT).show()
@@ -343,6 +374,11 @@ class CustomArFragment: Fragment(),
     private val audioPermissionResultLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted.not()) {
+                FirebaseAnalytics.getInstance(requireContext()).logEvent("start_recording",
+                    Bundle().apply {
+                        putString("microphone_permission_status", "denied")
+                    }
+                )
                 Toast.makeText(activity, resources.getString(R.string.microphone_permission_required_error_message), Toast.LENGTH_LONG).show()
             }
         }

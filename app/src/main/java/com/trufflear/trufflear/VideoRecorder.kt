@@ -4,6 +4,7 @@ import android.media.CamcorderProfile
 import android.media.MediaRecorder
 import android.util.Log
 import android.util.Size
+import com.bugsnag.android.Bugsnag
 import com.google.ar.sceneform.SceneView
 import java.io.File
 import java.text.SimpleDateFormat
@@ -102,6 +103,7 @@ class VideoRecorder(
     private fun buildFile(): File? {
         if (videoDirectory.exists().not()) {
             if (!videoDirectory.mkdirs()) {
+                Bugsnag.notify(Exception())
                 Log.d(TAG, "failed to create directory")
                 return null
             }
@@ -110,7 +112,6 @@ class VideoRecorder(
         val recordingFile = File(
             videoDirectory, "$VIDEO_BASE_NAME$timeStamp.mp4"
         )
-        Log.d(TAG, recordingFile.absolutePath ?: "recording file path is null")
         return recordingFile
     }
 

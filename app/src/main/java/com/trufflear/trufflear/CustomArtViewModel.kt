@@ -1,7 +1,5 @@
 package com.trufflear.trufflear
 
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trufflear.trufflear.data.ArImageRepository
@@ -32,8 +30,6 @@ class CustomArtViewModel @Inject constructor(
     private val _artistLinks = MutableStateFlow(emptyList<ArtistLinkModel>())
     val artistLinks = _artistLinks.asStateFlow()
 
-    val openWebIntent = MutableLiveData<Pair<CustomTabsIntent, String>>()
-
     init {
         loadArtistLinks()
     }
@@ -62,16 +58,6 @@ class CustomArtViewModel @Inject constructor(
             )
         })
     }
-
-    private fun artistLinkOnClick(link: String) =
-        openWebIntent.postValue(
-            Pair(
-                CustomTabsIntent.Builder()
-                    .setShowTitle(true)
-                    .build(),
-                link
-            )
-        )
 
     fun getVideoForImage(imageName: String): Int? = artistImageDatabase.getVideoForImage(imageName)
 }

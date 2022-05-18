@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "394674894834",
+    "project_id": "truffle-ar",
+    "storage_bucket": "truffle-ar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394674894834:android:dac73a6d1db75252b05d6b",
+        "android_client_info": {
+          "package_name": "com.trufflear.trufflear"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394674894834-hhog9mr5s9kupah4kc0876mmgoql23ba.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0_N9_vMbLUMJ_RJ1Lqvr7-hIkI-z_6Sk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394674894834-hhog9mr5s9kupah4kc0876mmgoql23ba.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "394674894834-6kv153dfm8d0373bv6vcprujfolnhbp1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.trufflear.trufflear"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

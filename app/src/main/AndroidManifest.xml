@@ -32,6 +32,9 @@
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="dcea7c480211f50642d5873ca0c56d6b"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

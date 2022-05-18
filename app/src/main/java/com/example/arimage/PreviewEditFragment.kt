@@ -1,6 +1,7 @@
 package com.example.arimage
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -43,7 +44,9 @@ class PreviewEditFragment: Fragment() {
         super.onResume()
         val file = File(args.filePath)
         if (file.exists()) {
-            startVideo(videoView, Uri.fromFile(file))
+            if (videoView.isPlaying.not()) {
+                startVideo(videoView, Uri.fromFile(file))
+            }
         } else {
             Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
@@ -66,18 +69,22 @@ class PreviewEditFragment: Fragment() {
     private fun startVideo(videoView: VideoView, uri: Uri) {
         with(videoView) {
             setOnPreparedListener { mediaPlayer ->
-                val videoRatio = mediaPlayer.videoWidth / mediaPlayer.videoHeight.toFloat()
-                val screenRatio = videoView.width / videoView.height.toFloat()
-                val scaleX = videoRatio / screenRatio
-                if (scaleX >= 1f) {
-                    videoView.scaleX = scaleX
-                } else {
-                    videoView.scaleY = 1f / scaleX
-                }
+                scaleVideoView(mediaPlayer, this)
                 mediaPlayer.isLooping = true
             }
             setVideoURI(uri)
             start()
+        }
+    }
+
+    private fun scaleVideoView(mediaPlayer: MediaPlayer, videoView: VideoView) {
+        val videoRatio = mediaPlayer.videoWidth / mediaPlayer.videoHeight.toFloat()
+        val screenRatio = videoView.width / videoView.height.toFloat()
+        val scaleX = videoRatio / screenRatio
+        if (scaleX >= 1f) {
+            videoView.scaleX = scaleX
+        } else {
+            videoView.scaleY = 1f / scaleX
         }
     }
 }

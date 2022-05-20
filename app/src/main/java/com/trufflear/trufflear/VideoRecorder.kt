@@ -116,10 +116,9 @@ class VideoRecorder(
     }
 
     private fun stopRecordingVideo(): Result<Unit> {
-        // UI
         isRecording = false
 
-        return kotlin.runCatching {
+        return runCatching {
             val encoderSurface = mediaRecorder?.surface ?: return Result.failure(Throwable())
             sceneView.stopMirroringToSurface(encoderSurface)
 
@@ -127,8 +126,10 @@ class VideoRecorder(
             mediaRecorder?.stop()
             mediaRecorder?.reset()
             mediaRecorder = null
+        }.onFailure {
+            mediaRecorder?.reset()
+            mediaRecorder = null
         }
-
     }
 
     private fun getCamcorderProfile(): CamcorderProfile? {

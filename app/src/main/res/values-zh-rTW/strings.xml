@@ -38,14 +38,14 @@
         停止錄影
     </string>
     <string
-        name="generic_error_message"
+        name="generic_error_snackbar_message"
         translation_description="Message that appears in the toast when an error has occurred">
         系統出問題 請再試一次
     </string>
     <string
-        name="link_button_tap_while_recording_error_message"
+        name="link_button_tap_while_recording_snackbar_error_message"
         translation_description="Message that appears in the toast when a link button is tapped while the user is recording.">
-        Buttons don\'t work when you are recording
+        錄影時觸控無效
     </string>
     <string
         name="progress_indicator_content_description"
@@ -53,7 +53,7 @@
         加載中
     </string>
     <string
-        name="microphone_permission_required_error_message"
+        name="microphone_permission_required_snackbar_error_message"
         translation_description="Message that appears in the toast when user attempts to record nad has not given microphone permission">
         給予麥克風使用權來開始拍攝
     </string>
@@ -72,5 +72,10 @@
         name="image_detected_message"
         translation_description="Message that appears in AR view when an image is detected">
         辨認到喜帖
+    </string>
+    <string
+        name="record_button_generic_error_message"
+        translation_description="Message that appears in AR view when the record button is tapped">
+        系統出問題 按久一點
     </string>
 </resources>

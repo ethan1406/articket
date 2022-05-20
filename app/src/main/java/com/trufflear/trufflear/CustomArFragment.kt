@@ -26,7 +26,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bugsnag.android.Bugsnag
-import com.trufflear.trufflear.CustomArFragmentDirections
 import com.trufflear.trufflear.models.ArtistLinkModel
 import com.trufflear.trufflear.viewmodels.ArtistLinkViewModel
 import com.trufflear.trufflear.views.ArtistLinkAdapter
@@ -87,6 +86,8 @@ class CustomArFragment: Fragment(),
         super.onResume()
         FirebaseAnalytics.getInstance(requireContext()).logEvent("home_screen_viewed", null)
         deleteRecursive(File(requireActivity().filesDir, FileProviderConstants.FILE_NAME))
+
+        tutorialTextPresenter.showDefaultTutorialMessages()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -245,7 +246,7 @@ class CustomArFragment: Fragment(),
         }
 
         recording?.onFailure {
-            Toast.makeText(activity, context?.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, context?.getString(R.string.record_button_generic_error_message), Toast.LENGTH_SHORT).show()
             Bugsnag.notify(it)
         }
     }
@@ -280,8 +281,18 @@ class CustomArFragment: Fragment(),
             videoNode.setOnTapListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     if(mediaPlayer.isPlaying) {
+                        FirebaseAnalytics.getInstance(requireContext()).logEvent("video_view_tapped",
+                            Bundle().apply {
+                                putString("to_status", "pause")
+                            }
+                        )
                         mediaPlayer.pause()
                     } else {
+                        FirebaseAnalytics.getInstance(requireContext()).logEvent("video_view_tapped",
+                            Bundle().apply {
+                                putString("to_status", "play")
+                            }
+                        )
                         mediaPlayer.start()
                     }
                 }
@@ -328,7 +339,7 @@ class CustomArFragment: Fragment(),
                 )
             }
             .exceptionally {
-                Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, resources.getString(R.string.generic_error_snackbar_message), Toast.LENGTH_SHORT).show()
                 Bugsnag.notify(it)
                 null
             }
@@ -349,11 +360,11 @@ class CustomArFragment: Fragment(),
                         .launchUrl(it, url.toUri())
                 }
             } catch (e: Exception) {
-                Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, resources.getString(R.string.generic_error_snackbar_message), Toast.LENGTH_SHORT).show()
                 Bugsnag.notify(e)
             }
         } else {
-            Toast.makeText(activity, resources.getString(R.string.link_button_tap_while_recording_error_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, resources.getString(R.string.link_button_tap_while_recording_snackbar_error_message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -379,7 +390,7 @@ class CustomArFragment: Fragment(),
                         putString("microphone_permission_status", "denied")
                     }
                 )
-                Toast.makeText(activity, resources.getString(R.string.microphone_permission_required_error_message), Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, resources.getString(R.string.microphone_permission_required_snackbar_error_message), Toast.LENGTH_LONG).show()
             }
         }
 

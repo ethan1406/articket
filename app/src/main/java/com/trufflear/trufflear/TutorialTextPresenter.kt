@@ -10,27 +10,24 @@ private const val ANIMATION_DURATION_MS = 1000L
 class TutorialTextPresenter(
     private val tutorialTextView: TextView,
     private val countDownTimer: TutorialCountDownTimer,
-    resources: Resources
+    private val resources: Resources
 ) {
 
-    private val messageQueue = mutableListOf(
-        resources.getString(R.string.initial_tutorial_message),
-        resources.getString(R.string.placement_tutorial_message)
-    )
+    private val messageQueue = mutableListOf<String>()
 
     init {
         tutorialTextView.background.alpha = DEFAULT_TUTORIAL_TEXT_ALPHA
         tutorialTextView.alpha = 0.0f
-        showInitialMessage()
-    }
-
-
-    private fun showInitialMessage() {
-        showMessage()
     }
 
     private fun clearMessageQueue() = messageQueue.clear()
 
+    fun showDefaultTutorialMessages() {
+        clearMessageQueue()
+        messageQueue.add(resources.getString(R.string.initial_tutorial_message))
+        messageQueue.add(resources.getString(R.string.placement_tutorial_message))
+        showMessage()
+    }
 
     fun showMessage(text: String? = null, autoHide: Boolean = true) {
         displayMessage(true)

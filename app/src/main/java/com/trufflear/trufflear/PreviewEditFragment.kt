@@ -1,6 +1,7 @@
 package com.trufflear.trufflear
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -16,7 +17,6 @@ import androidx.navigation.fragment.navArgs
 import com.bugsnag.android.Bugsnag
 import com.google.firebase.analytics.FirebaseAnalytics
 import java.io.File
-import java.lang.Exception
 
 class PreviewEditFragment: Fragment() {
     private val TAG = PreviewEditFragment::class.java.simpleName
@@ -53,7 +53,7 @@ class PreviewEditFragment: Fragment() {
             }
         } else {
             Bugsnag.notify(Exception("video file does not exist"))
-            Toast.makeText(activity, resources.getString(R.string.generic_error_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, resources.getString(R.string.generic_error_snackbar_message), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
 
@@ -66,9 +66,18 @@ class PreviewEditFragment: Fragment() {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, contentUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 type = "video/mp4"
             }
+
             val shareIntent = Intent.createChooser(sendIntent, null)
+            val resolveList = it.packageManager.queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY)
+            resolveList.forEach { info ->
+                val packageName = info.activityInfo.packageName
+                it.grantUriPermission(packageName, contentUri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+
             startActivity(shareIntent)
         }
     }

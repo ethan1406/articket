@@ -15,11 +15,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CustomArtViewModel @Inject constructor(
+class ArViewModel @Inject constructor(
     private val arImageRepository: ArImageRepository,
     private val artistImageDatabase: ArtistImageDatabase
 ): ViewModel() {
-    private val TAG = CustomArtViewModel::class.java.simpleName
+    private val TAG = ArViewModel::class.java.simpleName
 
     private val _isInitialLoading = MutableStateFlow(true)
     val isInitialLoading: StateFlow<Boolean> = _isInitialLoading

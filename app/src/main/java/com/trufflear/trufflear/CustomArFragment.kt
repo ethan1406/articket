@@ -57,7 +57,7 @@ class CustomArFragment: Fragment(),
 
     private val TAG = CustomArFragment::class.java.simpleName
 
-    private val viewModel by viewModels<CustomArtViewModel>()
+    private val viewModel by viewModels<ArViewModel>()
 
     private var isModelAdded = false
     private var mediaPlayer: MediaPlayer? = null

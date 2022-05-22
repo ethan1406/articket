@@ -75,6 +75,6 @@
     <string
         name="record_button_generic_error_message"
         translation_description="Message that appears in AR view when the record button is tapped">
-        Something went wrong. Try pressing the button longer to record.
+        Long press the button to record.
     </string>
 </resources>

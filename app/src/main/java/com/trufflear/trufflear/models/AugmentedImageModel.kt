@@ -1,15 +1,16 @@
 package com.trufflear.trufflear.models
 
 import android.graphics.Bitmap
+import androidx.annotation.RawRes
 
 data class AugmentedImageModel(
     val assetImage: String,
-    val videoRes: Int,
+    @RawRes val videoRes: Int,
     val imageWidthMeters: Float?
 )
 
 data class AugmentedImageBitmapModel(
     val image: Bitmap,
-    val videoRes: Int,
+    @RawRes val videoRes: Int,
     val imageWidthMeters: Float?
 )

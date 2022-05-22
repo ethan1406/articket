@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 private const val IMAGE_NAME_LENGTH = 6
 
-class ArtistImageDatabase @Inject constructor(
+class WeddingImageStorage @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) {
     private val imageAndVideoMap = mutableMapOf<String, Int>()

@@ -6,10 +6,12 @@ import android.util.Log
 import android.util.Size
 import com.bugsnag.android.Bugsnag
 import com.google.ar.sceneform.SceneView
+import com.trufflear.trufflear.file.FileCreator
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import javax.inject.Inject
 
 /**
  * Video Recorder class handles recording the contents of a SceneView. It uses MediaRecorder to
@@ -30,15 +32,17 @@ const val MAX_DURATION_MS = 15000
 
 class VideoRecorder(
     private val sceneView: SceneView,
-    fileDirectory: File
+    fileDirectory: File,
+    private val fileCreator: FileCreator,
+    private val recorderConfigurer: RecorderConfigurer,
+    private val mediaRecorder: MediaRecorder
 ) {
     // recordingVideoFlag is true when the media recorder is capturing video.
     var isRecording = false
 
     private val TAG = VideoRecorder::class.java.simpleName
-    private var mediaRecorder: MediaRecorder? = null
     private var videoSize: Size? = null
-    private val videoDirectory = File(
+    private val videoDirectory = fileCreator.createFile(
         fileDirectory, FileProviderConstants.FILE_NAME
     )
     var recordingFile: File? = null
@@ -64,10 +68,10 @@ class VideoRecorder(
         prepareVideoRecorder()
 
         return runCatching {
-            mediaRecorder?.start()
+            mediaRecorder.start()
 
             // Set up Surface for the MediaRecorder
-            val encoderSurface = mediaRecorder?.surface ?: return Result.failure(Throwable())
+            val encoderSurface = mediaRecorder.surface ?: return Result.failure(Throwable())
             val size = videoSize ?: return  Result.failure(Throwable())
 
             sceneView.startMirroringToSurface(
@@ -79,24 +83,12 @@ class VideoRecorder(
 
 
     private fun prepareVideoRecorder(): Result<Unit> {
-        if (mediaRecorder == null) {
-            mediaRecorder = MediaRecorder()
-        }
-
         recordingFile = buildFile() ?: return Result.failure(Throwable())
         val profile = getCamcorderProfile() ?: return Result.failure(Throwable())
-        videoSize = Size(profile.videoFrameHeight, profile.videoFrameWidth)
+        videoSize = recorderConfigurer.getSize(profile.videoFrameHeight, profile.videoFrameWidth)
 
         return runCatching {
-            mediaRecorder?.run {
-                setVideoSource(MediaRecorder.VideoSource.SURFACE)
-                setAudioSource(MediaRecorder.AudioSource.DEFAULT)
-                setProfile(profile)
-                setOutputFile(recordingFile)
-                setVideoSize(profile.videoFrameHeight, profile.videoFrameWidth)
-                setMaxDuration(MAX_DURATION_MS)
-                prepare()
-            }
+            recorderConfigurer.configureMediaRecorder(mediaRecorder, profile, recordingFile)
         }
     }
 
@@ -109,7 +101,7 @@ class VideoRecorder(
             }
         }
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val recordingFile = File(
+        val recordingFile = fileCreator.createFile(
             videoDirectory, "$VIDEO_BASE_NAME$timeStamp.mp4"
         )
         return recordingFile
@@ -119,24 +111,40 @@ class VideoRecorder(
         isRecording = false
 
         return runCatching {
-            val encoderSurface = mediaRecorder?.surface ?: return Result.failure(Throwable())
+            val encoderSurface = mediaRecorder.surface ?: return Result.failure(Throwable())
             sceneView.stopMirroringToSurface(encoderSurface)
 
             // Stop recording
-            mediaRecorder?.stop()
-            mediaRecorder?.reset()
-            mediaRecorder = null
+            mediaRecorder.stop()
+            mediaRecorder.reset()
         }.onFailure {
-            mediaRecorder?.reset()
-            mediaRecorder = null
+            mediaRecorder.reset()
         }
     }
 
-    private fun getCamcorderProfile(): CamcorderProfile? {
-        return QUALITY_LEVELS.find {
+    private fun getCamcorderProfile(): CamcorderProfile? = recorderConfigurer.hasProfile(QUALITY_LEVELS)
+}
+
+class RecorderConfigurer @Inject constructor() {
+
+    fun hasProfile(qualityLevels: List<Int>): CamcorderProfile? =
+        qualityLevels.find {
             CamcorderProfile.hasProfile(it)
         }?.let {
             CamcorderProfile.get(it)
         }
+
+    fun configureMediaRecorder(mediaRecorder: MediaRecorder?, profile: CamcorderProfile, recordingFile: File?) {
+        mediaRecorder?.run {
+            setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            setAudioSource(MediaRecorder.AudioSource.DEFAULT)
+            setProfile(profile)
+            setOutputFile(recordingFile)
+            setVideoSize(profile.videoFrameHeight, profile.videoFrameWidth)
+            setMaxDuration(MAX_DURATION_MS)
+            prepare()
+        }
     }
+
+    fun getSize(height: Int, width: Int): Size = Size(height, width)
 }

@@ -3,6 +3,7 @@ package com.trufflear.trufflear
 import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -26,7 +27,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bugsnag.android.Bugsnag
-import com.trufflear.trufflear.models.ArtistLinkModel
+import com.trufflear.trufflear.models.WeddingLinkModel
 import com.trufflear.trufflear.viewmodels.ArtistLinkViewModel
 import com.trufflear.trufflear.views.ArtistLinkAdapter
 import com.trufflear.trufflear.views.OnRecordListener
@@ -44,6 +45,7 @@ import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.trufflear.trufflear.file.FileCreator
 import com.trufflear.trufflear.views.RecordButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -141,7 +143,7 @@ class CustomArFragment: Fragment(),
         super.onPause()
     }
 
-    private fun ArtistLinkModel.toViewModel(): ArtistLinkViewModel =
+    private fun WeddingLinkModel.toViewModel(): ArtistLinkViewModel =
         ArtistLinkViewModel(
             image = image,
             text = text,
@@ -188,7 +190,10 @@ class CustomArFragment: Fragment(),
         activity?.let {
             videoRecorder = VideoRecorder(
                 arFragment.arSceneView,
-                it.filesDir
+                it.filesDir,
+                FileCreator(),
+                RecorderConfigurer(),
+                MediaRecorder()
             )
             setupRecordButton()
         }
@@ -372,7 +377,7 @@ class CustomArFragment: Fragment(),
         val newVideoHeight = image.extentZ * 2
         val newVideoWidth = image.extentZ  * (videoWidth.toFloat()/videoHeight.toFloat())
 
-        return Vector3(newVideoWidth, newVideoHeight, 1f)
+        return Vector3(newVideoWidth, newVideoHeight, 0f)
     }
 
     private fun initializeMediaPlayer(videoRes: Int): MediaPlayer =

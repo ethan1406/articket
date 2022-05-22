@@ -2,12 +2,12 @@ package com.trufflear.trufflear
 
 import android.content.res.Resources
 import android.widget.TextView
-
+import javax.inject.Inject
 
 private const val DEFAULT_TUTORIAL_TEXT_ALPHA = 185
 private const val ANIMATION_DURATION_MS = 1000L
 
-class TutorialTextPresenter(
+class TutorialTextPresenter @Inject constructor(
     private val tutorialTextView: TextView,
     private val countDownTimer: TutorialCountDownTimer,
     private val resources: Resources
@@ -44,14 +44,12 @@ class TutorialTextPresenter(
 
         tutorialTextView.text = textToShow
 
-        if (autoHide) {
-            countDownTimer.start {
-                messageQueue.remove(textToShow)
-                if (messageQueue.isEmpty()) {
-                    displayMessage(false)
-                } else {
-                    showMessage()
-                }
+        countDownTimer.start {
+            messageQueue.remove(textToShow)
+            if (messageQueue.isEmpty()) {
+                if (autoHide) displayMessage(false)
+            } else {
+                showMessage(autoHide = autoHide)
             }
         }
     }

@@ -6,7 +6,7 @@ import android.util.Log
 import com.bugsnag.android.Bugsnag
 import com.trufflear.trufflear.R
 import com.trufflear.trufflear.AssetConstants
-import com.trufflear.trufflear.models.ArtistLinkModel
+import com.trufflear.trufflear.models.WeddingLinkModel
 import com.trufflear.trufflear.models.AugmentedImageBitmapModel
 import com.trufflear.trufflear.models.AugmentedImageModel
 import java.io.IOException
@@ -31,30 +31,30 @@ class ArImageRepository @Inject constructor(private val assets: AssetManager) {
             }
         }
 
-    fun getWeddingLinks(): List<ArtistLinkModel> =
+    fun getWeddingLinks(): List<WeddingLinkModel> =
         listOf(
-            ArtistLinkModel(
+            WeddingLinkModel(
                 image = R.drawable.ic_instagram,
                 text = "Wedding pics",
                 webLink = "https://www.trufflear.com/wedding-cards"
             ),
-            ArtistLinkModel(
+            WeddingLinkModel(
                 image = R.drawable.ic_link,
                 text = "Our Website",
                 webLink = "https://www.trufflear.com/wedding-cards"
             ),
 
-            ArtistLinkModel(
+            WeddingLinkModel(
                 image = R.drawable.ic_link,
                 text = "Registry",
                 webLink = "https://www.zola.com/wedding/phoebeandethan2022"
             ),
-            ArtistLinkModel(
+            WeddingLinkModel(
                 image = R.drawable.ic_gallery,
                 text = "Gallery",
                 webLink = "https://www.zola.com/wedding/phoebeandethan2022"
             ),
-            ArtistLinkModel(
+            WeddingLinkModel(
                 image = R.drawable.ic_calendar,
                 text = "Schedule",
                 webLink = "https://www.zola.com/wedding/phoebeandethan2022"
@@ -63,6 +63,6 @@ class ArImageRepository @Inject constructor(private val assets: AssetManager) {
 
     private fun getLocalArImageAndVideoPairs(): List<AugmentedImageModel> =
         listOf(
-            AugmentedImageModel(AssetConstants.WEDDING_COVER_IMAGE_4, R.raw.wedding_card, 0.129f),
+            AugmentedImageModel(AssetConstants.WEDDING_COVER_IMAGE, R.raw.wedding_card, 0.141f),
         )
 }

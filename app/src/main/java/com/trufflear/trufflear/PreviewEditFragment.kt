@@ -16,14 +16,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bugsnag.android.Bugsnag
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.trufflear.trufflear.file.ContentUriProvider
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PreviewEditFragment: Fragment() {
     private val TAG = PreviewEditFragment::class.java.simpleName
 
     private val args by navArgs<PreviewEditFragmentArgs>()
 
     private lateinit var videoView: VideoView
+
+    @Inject lateinit var contentUriProvider: ContentUriProvider
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.preview_edit_fragment, container, false)
@@ -62,7 +68,7 @@ class PreviewEditFragment: Fragment() {
 
     private fun shareButtonHandler() {
         activity?.let {
-            val contentUri = ContentUriProvider().getUriForFile(it, FileProviderConstants.AUTHORITY, File(args.filePath))
+            val contentUri = contentUriProvider.getUriForFile(it, FileProviderConstants.AUTHORITY, File(args.filePath))
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, contentUri)

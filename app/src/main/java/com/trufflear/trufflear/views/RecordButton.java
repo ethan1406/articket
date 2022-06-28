@@ -253,7 +253,7 @@ public class RecordButton extends View implements Animatable {
      * @return progress animate
      */
     private ObjectAnimator progressAnimate() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(this, "progress", currentMiliSecond, maxMilisecond);
+        @SuppressLint("ObjectAnimatorBinding") ObjectAnimator animator = ObjectAnimator.ofFloat(this, "progress", currentMiliSecond, maxMilisecond);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

@@ -7,7 +7,7 @@ object FileProviderConstants {
 
 
 object AssetConstants {
-    const val WEDDING_COVER_IMAGE = "wedding_invitation_cover.jpg"
+    const val WEDDING_COVER_IMAGE = "wedding_invitation_card.jpg"
 }
 
 object NodeConfig {

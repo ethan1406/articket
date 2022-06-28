@@ -5,6 +5,5 @@
     android:id="@+id/artist_link_button"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:icon="@drawable/ic_gallery"
     android:text="Our website"
     style="@style/CoreUiButton.Focus.Compact.Primary"/>

@@ -1,6 +1,7 @@
 package com.trufflear.trufflear.modules
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.LayoutInflater
 import dagger.Module
 import dagger.Provides
@@ -15,4 +16,7 @@ class CoreActivityModule {
     @Provides
     fun provideLayoutInflater(@ActivityContext context: Context): LayoutInflater =
         LayoutInflater.from(context)
+
+    @Provides
+    fun providesResources(@ActivityContext context: Context): Resources = context.resources
 }

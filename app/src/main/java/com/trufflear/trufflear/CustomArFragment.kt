@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -46,9 +47,13 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.trufflear.trufflear.file.FileCreator
+import com.trufflear.trufflear.models.CardTransformation
+import com.trufflear.trufflear.modules.DefaultDispatcher
 import com.trufflear.trufflear.views.RecordButton
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
@@ -65,6 +70,7 @@ class CustomArFragment: Fragment(),
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var arFragment: ArFragment
     @Inject lateinit var artistLinkAdapter: ArtistLinkAdapter
+    @Inject @DefaultDispatcher lateinit var dispatcher: CoroutineDispatcher
 
     private lateinit var progressIndicator: CircularProgressIndicator
 
@@ -132,6 +138,7 @@ class CustomArFragment: Fragment(),
                     }
                 }
             }
+
         }
     }
 
@@ -173,10 +180,18 @@ class CustomArFragment: Fragment(),
         if (augmentedImage.trackingState == TrackingState.TRACKING
             && augmentedImage.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
             if (isModelAdded.not()) {
-                viewModel.getVideoForImage(augmentedImage.name)?.let {
-                    showImageDetectedMessage()
-                    createArtistArView(arFragment, augmentedImage, it)
+
+                viewModel.getCardTransformationForImage(augmentedImage.name.toInt())?.let {
                     isModelAdded = true
+                    showImageDetectedMessage()
+
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        mediaPlayer = withContext(dispatcher) {
+                            initializeMediaPlayer(it.cardVideo.videoUrl)
+                        }
+
+                        createArtistArView(arFragment, augmentedImage, it)
+                    }
                 }
             }
         }
@@ -269,10 +284,9 @@ class CustomArFragment: Fragment(),
     private fun createArtistArView(
         arFragment: ArFragment,
         augmentedImage: AugmentedImage,
-        videoRes: Int
+        cardTransformation: CardTransformation,
     ) {
         val anchorNode = AnchorNode(augmentedImage.createAnchor(augmentedImage.centerPose))
-        mediaPlayer = initializeMediaPlayer(videoRes)
 
         // TODO handle media player loading
         mediaPlayer?.let { mediaPlayer ->
@@ -305,7 +319,7 @@ class CustomArFragment: Fragment(),
             videoNode.parent = anchorNode
             videoNode.localRotation = flattenViewOnImage()
             videoNode.localScale = getScale(augmentedImage, mediaPlayer.videoHeight, mediaPlayer.videoWidth)
-            videoNode.localPosition = Vector3(0f, NodeConfig.videoZPostion, augmentedImage.extentZ/2)
+            videoNode.localPosition = Vector3(0f, 0f, augmentedImage.extentZ/2)
 
             FirebaseAnalytics.getInstance(requireContext()).logEvent("video_viewed",
                 Bundle().apply {
@@ -333,8 +347,8 @@ class CustomArFragment: Fragment(),
                 node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ * 0.9f)
                 node.rotationController.isEnabled = false
                 node.translationController.isEnabled = false
-                node.scaleController.minScale = NodeConfig.viewMinScale
-                node.scaleController.maxScale = NodeConfig.viewMaxScale
+                node.scaleController.minScale = cardTransformation.attachmentView.minScale
+                node.scaleController.maxScale = cardTransformation.attachmentView.maxScale
 
                 FirebaseAnalytics.getInstance(requireContext()).logEvent("attachment_links_viewed",
                     Bundle().apply {
@@ -380,8 +394,8 @@ class CustomArFragment: Fragment(),
         return Vector3(newVideoWidth, newVideoHeight, 0f)
     }
 
-    private fun initializeMediaPlayer(videoRes: Int): MediaPlayer =
-        MediaPlayer.create(activity, videoRes).also {
+    private fun initializeMediaPlayer(videoUrl: String): MediaPlayer =
+        MediaPlayer.create(activity, Uri.parse(videoUrl)).also {
             it.isLooping = true
         }
 

@@ -1,10 +1,14 @@
 package com.trufflear.trufflear.data
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import com.trufflear.trufflear.models.AugmentedImageBitmapModel
 import com.trufflear.trufflear.modules.DefaultDispatcher
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.google.ar.core.Session
+import com.squareup.picasso.Picasso
+import com.trufflear.trufflear.models.CardImage
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,7 +26,7 @@ class WeddingImageStorage @Inject constructor(
     suspend fun getConfigWithImageDatabase(
         config: Config,
         session: Session,
-        artistImages: List<AugmentedImageBitmapModel>,
+        cardImages: List<CardImage>
     ): Config {
         augmentedImageDatabase?.let {
             config.augmentedImageDatabase = augmentedImageDatabase
@@ -30,14 +34,16 @@ class WeddingImageStorage @Inject constructor(
         }
         return withContext(dispatcher) {
             augmentedImageDatabase = AugmentedImageDatabase(session)
-            artistImages.forEach { model ->
-                val imageName = getRandomString(IMAGE_NAME_LENGTH)
-                model.imageWidthMeters?.let {
-                    augmentedImageDatabase?.addImage(imageName, model.image, model.imageWidthMeters)
+            cardImages.forEach { cardImage ->
+                val bitmap = Picasso.get()
+                    .load(cardImage.imageUrl)
+                    .get()
+
+                cardImage.physicalSize?.width?.let {
+                    augmentedImageDatabase?.addImage(cardImage.imageId.toString(), bitmap, it)
                 } ?: run {
-                    augmentedImageDatabase?.addImage(imageName, model.image)
+                    augmentedImageDatabase?.addImage(cardImage.imageId.toString(), bitmap)
                 }
-                imageAndVideoMap.putIfAbsent(imageName, model.videoRes)
             }
             config.augmentedImageDatabase = augmentedImageDatabase
             config

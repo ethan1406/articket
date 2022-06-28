@@ -7,3 +7,10 @@ data class WeddingLinkModel(
     val text: String,
     val webLink: String
 )
+
+data class AttachmentLinkModel(
+    val imageUrl: String,
+    val text: String,
+    val webLink: String,
+    val colorCode: String
+)

@@ -8,7 +8,8 @@ import com.trufflear.trufflear.data.WeddingImageStorage
 import com.trufflear.trufflear.models.WeddingLinkModel
 import com.google.ar.core.Config
 import com.google.ar.core.Session
-import com.trufflear.trufflear.modules.MainDispatcher
+import com.trufflear.trufflear.models.CardTransformation
+import com.trufflear.trufflear.modules.DefaultDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +22,9 @@ import javax.inject.Inject
 class ArViewModel @Inject constructor(
     private val arImageRepository: ArImageRepository,
     private val weddingImageDatabase: WeddingImageStorage,
-    @MainDispatcher private val dispatcher: CoroutineDispatcher
-): ViewModel() {
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
+
+    ): ViewModel() {
     private val TAG = ArViewModel::class.java.simpleName
 
     private val _isInitialLoading = MutableStateFlow(true)
@@ -34,6 +36,8 @@ class ArViewModel @Inject constructor(
     private val _artistLinks = MutableStateFlow(emptyList<WeddingLinkModel>())
     val artistLinks = _artistLinks.asStateFlow()
 
+    private val imageToTransformationMap = mutableMapOf<Int, CardTransformation>()
+
     init {
         loadWeddingLinks()
     }
@@ -42,20 +46,29 @@ class ArViewModel @Inject constructor(
         session: Session,
         config: Config
     ) {
-        viewModelScope.launch(dispatcher) {
-            val config = weddingImageDatabase.getConfigWithImageDatabase(
-                config,
-                session,
-                arImageRepository.loadArImageBitmapModels()
-            )
-            _arFragmentConfig.value = ArFragmentConfig(config)
-            _isInitialLoading.value = false
+        viewModelScope.launch(defaultDispatcher) {
+
+            val result = arImageRepository.getCardTransformations()
+            result.onSuccess { map ->
+                imageToTransformationMap.clear()
+                imageToTransformationMap.putAll(map)
+
+                val localConfig = weddingImageDatabase.getConfigWithImageDatabase(
+                    config,
+                    session,
+                    imageToTransformationMap.values.map { it.cardImage }
+                )
+                _arFragmentConfig.value = ArFragmentConfig(localConfig)
+                _isInitialLoading.value = false
+            }
         }
     }
 
     private fun loadWeddingLinks() {
         _artistLinks.value = arImageRepository.getWeddingLinks()
     }
+
+    fun getCardTransformationForImage(imageId: Int): CardTransformation? = imageToTransformationMap[imageId]
 
     @RawRes fun getVideoForImage(imageName: String): Int? = weddingImageDatabase.getVideoForImage(imageName)
 }

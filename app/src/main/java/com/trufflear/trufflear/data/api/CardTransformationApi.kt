@@ -1,6 +1,9 @@
 package com.trufflear.trufflear.data.api
 
 import android.content.Context
+import com.trufflear.trufflear.Api.API_BASE_URL
+import com.trufflear.trufflear.Api.API_ENDPOINT_PORT
+import com.trufflear.trufflear.Api.API_REQUEST_PLATFORM
 import com.trufflear.trufflear.CardTransformationGrpcKt
 import com.trufflear.trufflear.GetCardTransformationDataResponse
 import com.trufflear.trufflear.getCardTransformationDataRequest
@@ -19,7 +22,7 @@ class CardTransformationApi @Inject constructor(@ApplicationContext context: Con
         println("Connecting")
 
         AndroidChannelBuilder
-            .forAddress("api.trufflear.com", 50051)
+            .forAddress(API_BASE_URL, API_ENDPOINT_PORT)
             .context(context)
             .useTransportSecurity()
             .executor(Dispatchers.IO.asExecutor()).build()
@@ -29,7 +32,7 @@ class CardTransformationApi @Inject constructor(@ApplicationContext context: Con
 
     suspend fun getCardTransformationData(): Result<GetCardTransformationDataResponse> = runCatching {
         val request = getCardTransformationDataRequest {
-            platform = "android"
+            platform = API_REQUEST_PLATFORM
         }
         cardTransformationService.getCardTransformationData(request)
     }

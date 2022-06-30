@@ -5,14 +5,12 @@ object FileProviderConstants {
     const val AUTHORITY = "com.arimage.fileprovider"
 }
 
-
-object AssetConstants {
-    const val WEDDING_COVER_IMAGE = "wedding_invitation_card.jpg"
-}
-
 object NodeConfig {
     const val flattenNodeOnImageRotation = -90f
-    const val videoZPostion = -0.007f
-    const val viewMinScale = 0.10f
-    const val viewMaxScale = 0.15f
+}
+
+object Api {
+    const val API_BASE_URL = "api.trufflear.com"
+    const val API_ENDPOINT_PORT = 50051
+    const val API_REQUEST_PLATFORM = "android"
 }

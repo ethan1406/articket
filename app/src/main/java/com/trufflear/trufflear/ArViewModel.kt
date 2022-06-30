@@ -1,5 +1,7 @@
 package com.trufflear.trufflear
 
+import android.content.res.Resources
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trufflear.trufflear.data.ArImageRepository
@@ -8,6 +10,7 @@ import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.trufflear.trufflear.models.CardTransformation
 import com.trufflear.trufflear.modules.DefaultDispatcher
+import com.trufflear.trufflear.viewmodels.ToastViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +23,8 @@ class ArViewModel @Inject constructor(
     private val arImageRepository: ArImageRepository,
     private val weddingImageDatabase: WeddingImageStorage,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-
-    ): ViewModel() {
+    private val resources: Resources
+): ViewModel() {
     private val TAG = ArViewModel::class.java.simpleName
 
     private val _isInitialLoading = MutableStateFlow(true)
@@ -29,6 +32,9 @@ class ArViewModel @Inject constructor(
 
     private val _arFragmentConfig = MutableStateFlow(ArFragmentConfig())
     val arFragmentConfig: StateFlow<ArFragmentConfig> = _arFragmentConfig
+
+    private val _toastViewModel = MutableStateFlow(ToastViewModelWrapper())
+    val toastViewModel: StateFlow<ToastViewModelWrapper> = _toastViewModel
 
     private val imageToTransformationMap = mutableMapOf<Int, CardTransformation>()
     fun setupArtistImageDatabase(
@@ -50,6 +56,15 @@ class ArViewModel @Inject constructor(
                 _arFragmentConfig.value = ArFragmentConfig(localConfig)
                 _isInitialLoading.value = false
             }
+
+            result.onFailure {
+                _toastViewModel.value = ToastViewModelWrapper(
+                    ToastViewModel(
+                        text = resources.getString(R.string.generic_fatal_error_snackbar_message),
+                        duration = Toast.LENGTH_LONG
+                    )
+                )
+            }
         }
     }
 
@@ -59,4 +74,8 @@ class ArViewModel @Inject constructor(
 
 data class ArFragmentConfig(
     val config: Config? = null
+)
+
+data class ToastViewModelWrapper(
+    val toastViewModel: ToastViewModel? = null
 )

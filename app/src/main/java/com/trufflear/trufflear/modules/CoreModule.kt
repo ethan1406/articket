@@ -2,6 +2,7 @@ package com.trufflear.trufflear.modules
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,4 +17,6 @@ object CoreModule {
     fun provideAssetManager(@ApplicationContext context: Context): AssetManager =
         context.assets
 
+    @Provides
+    fun providesResources(@ApplicationContext context: Context): Resources = context.resources
 }

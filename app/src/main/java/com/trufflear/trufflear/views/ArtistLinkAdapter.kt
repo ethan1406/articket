@@ -1,7 +1,9 @@
 package com.trufflear.trufflear.views
 
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -57,6 +59,7 @@ class ArtistLinkViewHolder(
             .into(target)
 
         artistLinkButton.text = viewModel.text
+        artistLinkButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor(viewModel.colorCode))
 
         artistLinkButton.setOnClickListener {
             viewModel.onClick(viewModel.webLink)

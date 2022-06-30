@@ -126,6 +126,13 @@ class CustomArFragment: Fragment(),
                 launch {
                     viewModel.isInitialLoading.collect { enableLoadingView(it) }
                 }
+                launch {
+                    viewModel.toastViewModel.collect { wrapper ->
+                        wrapper.toastViewModel?.let {
+                            Toast.makeText(activity, it.text, it.duration).show()
+                        }
+                    }
+                }
             }
 
         }
@@ -143,6 +150,7 @@ class CustomArFragment: Fragment(),
         AttachmentViewLinkModel(
             imageUrl = imageUrl,
             text = text,
+            colorCode = colorCode,
             webLink = webLink,
             onClick = ::openWebView
         )

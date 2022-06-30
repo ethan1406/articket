@@ -39,7 +39,12 @@
     <string
         name="generic_error_snackbar_message"
         translation_description="Message that appears in the toast when an error has occurred">
-        Something went wrong. Please try again
+        Something went wrong. Please try again.
+    </string>
+    <string
+        name="generic_fatal_error_snackbar_message"
+        translation_description="Message that appears in the toast when an irrecoverable error has occured">
+        Something went wrong. Please restart the app.
     </string>
     <string
         name="link_button_tap_while_recording_snackbar_error_message"

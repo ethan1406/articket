@@ -23,7 +23,7 @@ internal fun GetCardTransformationDataResponse.toArImageMap(): Map<Int, CardTran
                             AttachmentLinkModel(
                                 imageUrl = it.imageUrl,
                                 text = it.text,
-                                webLink = it.imageUrl,
+                                webLink = it.webUrl,
                                 colorCode = it.colorCode
                             )
                         },
@@ -46,7 +46,13 @@ internal fun GetCardTransformationDataResponse.toArImageMap(): Map<Int, CardTran
                         )
                     ),
                     cardVideo = CardVideo(
-                        videoUrl = transformation.augmentedVideo.videoUrl
+                        videoUrl = transformation.augmentedVideo.videoUrl,
+                        widthScaleToImageWidth = transformation.augmentedVideo.videoWidthScaleToImageWidth,
+                        position = Position(
+                            xScaleToImageWidth = transformation.augmentedVideo.position.xScaleToImageWidth,
+                            y = transformation.augmentedVideo.position.y,
+                            zScaleToImageHeight = transformation.augmentedVideo.position.zScaleToImageHeight
+                        )
                     )
                 )
             }

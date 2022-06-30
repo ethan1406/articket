@@ -28,8 +28,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bugsnag.android.Bugsnag
-import com.trufflear.trufflear.models.WeddingLinkModel
-import com.trufflear.trufflear.viewmodels.ArtistLinkViewModel
+import com.trufflear.trufflear.viewmodels.AttachmentViewLinkModel
 import com.trufflear.trufflear.views.ArtistLinkAdapter
 import com.trufflear.trufflear.views.OnRecordListener
 import com.trufflear.trufflear.views.indicators.CircularProgressIndicator
@@ -47,6 +46,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 import com.google.ar.sceneform.ux.VideoNode
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.trufflear.trufflear.file.FileCreator
+import com.trufflear.trufflear.models.AttachmentLinkModel
 import com.trufflear.trufflear.models.CardTransformation
 import com.trufflear.trufflear.modules.DefaultDispatcher
 import com.trufflear.trufflear.views.RecordButton
@@ -124,18 +124,7 @@ class CustomArFragment: Fragment(),
                     }
                 }
                 launch {
-                    viewModel.isInitialLoading.collect {
-                        progressIndicator.visibility = if (it) {
-                            View.VISIBLE
-                        } else {
-                            View.INVISIBLE
-                        }
-                    }
-                }
-                launch {
-                    viewModel.artistLinks.collect { list ->
-                        artistLinkAdapter.submitList(list.map { it.toViewModel() })
-                    }
+                    viewModel.isInitialLoading.collect { enableLoadingView(it) }
                 }
             }
 
@@ -150,9 +139,9 @@ class CustomArFragment: Fragment(),
         super.onPause()
     }
 
-    private fun WeddingLinkModel.toViewModel(): ArtistLinkViewModel =
-        ArtistLinkViewModel(
-            image = image,
+    private fun AttachmentLinkModel.toViewModel(): AttachmentViewLinkModel =
+        AttachmentViewLinkModel(
+            imageUrl = imageUrl,
             text = text,
             webLink = webLink,
             onClick = ::openWebView
@@ -184,6 +173,7 @@ class CustomArFragment: Fragment(),
                 viewModel.getCardTransformationForImage(augmentedImage.name.toInt())?.let {
                     isModelAdded = true
                     showImageDetectedMessage()
+                    enableLoadingView(true)
 
                     viewLifecycleOwner.lifecycleScope.launch {
                         mediaPlayer = withContext(dispatcher) {
@@ -191,9 +181,21 @@ class CustomArFragment: Fragment(),
                         }
 
                         createArtistArView(arFragment, augmentedImage, it)
+                        populateCardLinkRecyclerView(it.cardLinks)
+                        enableLoadingView(false)
                     }
                 }
             }
+        }
+    }
+
+    private fun populateCardLinkRecyclerView(list: List<AttachmentLinkModel>) = artistLinkAdapter.submitList(list.map { it.toViewModel() })
+
+    private fun enableLoadingView(enable: Boolean) {
+        progressIndicator.visibility = if (enable) {
+            View.VISIBLE
+        } else {
+            View.INVISIBLE
         }
     }
 
@@ -318,8 +320,18 @@ class CustomArFragment: Fragment(),
             }
             videoNode.parent = anchorNode
             videoNode.localRotation = flattenViewOnImage()
-            videoNode.localScale = getScale(augmentedImage, mediaPlayer.videoHeight, mediaPlayer.videoWidth)
-            videoNode.localPosition = Vector3(0f, 0f, augmentedImage.extentZ/2)
+
+            // same scale is sent by the backend for iOS and Android. However, the scale looks different visually on Android.
+            val scaleAdjustForAndroid = -0.25f
+            val scale = cardTransformation.cardVideo.widthScaleToImageWidth + scaleAdjustForAndroid
+            videoNode.localScale = getScale(augmentedImage, mediaPlayer.videoHeight, mediaPlayer.videoWidth, scale)
+
+            val position = cardTransformation.cardVideo.position
+            videoNode.localPosition = Vector3(
+                augmentedImage.extentX * position.xScaleToImageWidth,
+                position.y,
+                (augmentedImage.extentZ/2) * scale + augmentedImage.extentZ * position.zScaleToImageHeight
+            )
 
             FirebaseAnalytics.getInstance(requireContext()).logEvent("video_viewed",
                 Bundle().apply {
@@ -344,7 +356,14 @@ class CustomArFragment: Fragment(),
                 node.renderable = it
                 node.parent = anchorNode
                 node.localRotation = flattenViewOnImage()
-                node.localPosition = Vector3(0f, 0f, augmentedImage.extentZ * 0.9f)
+
+                val cardPosition = cardTransformation.attachmentView.position
+
+                node.localPosition = Vector3(
+                    augmentedImage.extentX * cardPosition.xScaleToImageWidth,
+                    cardPosition.y,
+                    augmentedImage.extentZ * cardPosition.zScaleToImageHeight
+                )
                 node.rotationController.isEnabled = false
                 node.translationController.isEnabled = false
                 node.scaleController.minScale = cardTransformation.attachmentView.minScale
@@ -387,9 +406,14 @@ class CustomArFragment: Fragment(),
         }
     }
 
-    private fun getScale(image: AugmentedImage, videoHeight: Int, videoWidth: Int): Vector3 {
-        val newVideoHeight = image.extentZ * 2
-        val newVideoWidth = image.extentZ  * (videoWidth.toFloat()/videoHeight.toFloat())
+    private fun getScale(
+        image: AugmentedImage,
+        videoHeight: Int,
+        videoWidth: Int,
+        scale: Float
+    ): Vector3 {
+        val newVideoHeight = image.extentZ * 2 * scale
+        val newVideoWidth = image.extentZ  * (videoWidth.toFloat()/videoHeight.toFloat()) * scale
 
         return Vector3(newVideoWidth, newVideoHeight, 0f)
     }

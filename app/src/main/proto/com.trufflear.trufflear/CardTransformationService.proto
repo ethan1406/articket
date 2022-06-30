@@ -45,6 +45,7 @@ message LinkButton {
   string image_url = 2;
   string text = 3;
   string color_code = 4;
+  string web_url = 5;
 }
 
 message AugmentedImage {

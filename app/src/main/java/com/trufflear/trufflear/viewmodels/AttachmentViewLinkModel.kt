@@ -1,9 +1,7 @@
 package com.trufflear.trufflear.viewmodels
 
-import androidx.annotation.DrawableRes
-
-data class ArtistLinkViewModel(
-    @DrawableRes val image: Int,
+data class AttachmentViewLinkModel(
+    val imageUrl: String,
     val text: String,
     val onClick: (String) -> Unit,
     val webLink: String

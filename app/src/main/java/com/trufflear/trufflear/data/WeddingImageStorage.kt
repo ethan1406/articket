@@ -1,8 +1,5 @@
 package com.trufflear.trufflear.data
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import com.trufflear.trufflear.models.AugmentedImageBitmapModel
 import com.trufflear.trufflear.modules.DefaultDispatcher
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
@@ -13,15 +10,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-private const val IMAGE_NAME_LENGTH = 6
-
 class WeddingImageStorage @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) {
-    private val imageAndVideoMap = mutableMapOf<String, Int>()
     private var augmentedImageDatabase: AugmentedImageDatabase? = null
-
-    fun getVideoForImage(imageName: String): Int? = imageAndVideoMap[imageName]
 
     suspend fun getConfigWithImageDatabase(
         config: Config,
@@ -49,12 +41,4 @@ class WeddingImageStorage @Inject constructor(
             config
         }
     }
-
-    private fun getRandomString(length: Int) : String {
-        val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-        return (1..length)
-            .map { allowedChars.random() }
-            .joinToString("")
-    }
-
 }

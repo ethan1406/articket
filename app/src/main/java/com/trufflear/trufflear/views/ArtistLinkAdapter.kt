@@ -13,14 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import com.trufflear.trufflear.R
-import com.trufflear.trufflear.viewmodels.ArtistLinkViewModel
+import com.trufflear.trufflear.viewmodels.AttachmentViewLinkModel
 import java.lang.Exception
 import javax.inject.Inject
 
 class ArtistLinkAdapter @Inject constructor(
     private val resources: Resources,
     private val inflater: LayoutInflater
-): ListAdapter<ArtistLinkViewModel, ArtistLinkViewHolder>(DiffCallback) {
+): ListAdapter<AttachmentViewLinkModel, ArtistLinkViewHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistLinkViewHolder {
         return ArtistLinkViewHolder(
             resources,
@@ -40,7 +40,7 @@ class ArtistLinkViewHolder(
 
     private val artistLinkButton = itemView.findViewById<ArtistLinkButton>(R.id.artist_link_button)
 
-    internal fun bind(viewModel: ArtistLinkViewModel) {
+    internal fun bind(viewModel: AttachmentViewLinkModel) {
 
         val target = object: Target {
             override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
@@ -53,7 +53,7 @@ class ArtistLinkViewHolder(
         }
 
         Picasso.get()
-            .load("https://truffle.s3.us-west-1.amazonaws.com/staging/linkButtonIcons/ic_gallery.png")
+            .load(viewModel.imageUrl)
             .into(target)
 
         artistLinkButton.text = viewModel.text
@@ -64,12 +64,12 @@ class ArtistLinkViewHolder(
     }
 }
 
-internal object DiffCallback: DiffUtil.ItemCallback<ArtistLinkViewModel>() {
-    override fun areItemsTheSame(oldItem: ArtistLinkViewModel, newItem: ArtistLinkViewModel) =
-        oldItem.image == newItem.image &&
+internal object DiffCallback: DiffUtil.ItemCallback<AttachmentViewLinkModel>() {
+    override fun areItemsTheSame(oldItem: AttachmentViewLinkModel, newItem: AttachmentViewLinkModel) =
+        oldItem.imageUrl == newItem.imageUrl &&
                 oldItem.text == newItem.text &&
                 oldItem.webLink == newItem.webLink
 
-    override fun areContentsTheSame(oldItem: ArtistLinkViewModel, newItem: ArtistLinkViewModel) =
+    override fun areContentsTheSame(oldItem: AttachmentViewLinkModel, newItem: AttachmentViewLinkModel) =
         oldItem == newItem
 }

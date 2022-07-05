@@ -37,6 +37,7 @@ class ArViewModel @Inject constructor(
     val toastViewModel: StateFlow<ToastViewModelWrapper> = _toastViewModel
 
     private val imageToTransformationMap = mutableMapOf<Int, CardTransformation>()
+
     fun setupArtistImageDatabase(
         session: Session,
         config: Config
@@ -54,7 +55,6 @@ class ArViewModel @Inject constructor(
                     imageToTransformationMap.values.map { it.cardImage }
                 )
                 _arFragmentConfig.value = ArFragmentConfig(localConfig)
-                _isInitialLoading.value = false
             }
 
             result.onFailure {
@@ -65,6 +65,8 @@ class ArViewModel @Inject constructor(
                     )
                 )
             }
+
+            _isInitialLoading.value = false
         }
     }
 

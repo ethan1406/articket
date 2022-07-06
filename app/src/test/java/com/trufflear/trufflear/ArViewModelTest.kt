@@ -1,11 +1,12 @@
 package com.trufflear.trufflear
 
 import android.content.res.Resources
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import com.google.ar.core.Config
 import com.trufflear.trufflear.data.ArImageRepository
 import com.trufflear.trufflear.data.WeddingImageStorage
 import com.trufflear.trufflear.models.AttachmentLinkModel
-import com.trufflear.trufflear.models.AttachmentView
 import com.trufflear.trufflear.models.CardImage
 import com.trufflear.trufflear.models.CardTransformation
 import com.trufflear.trufflear.models.CardVideo
@@ -19,6 +20,7 @@ import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -44,6 +46,9 @@ class ArViewModelTest {
     private lateinit var weddingImageStorage: WeddingImageStorage
 
     @Mock
+    private lateinit var connectivityManager: ConnectivityManager
+
+    @Mock
     private lateinit var arImageRepository: ArImageRepository
 
     @Mock
@@ -51,6 +56,15 @@ class ArViewModelTest {
 
     @InjectMocks
     private lateinit var arViewModel: ArViewModel
+
+    @Before
+    fun setup() {
+        val networkCapabilitiesMock = mock<NetworkCapabilities> {
+            on { hasTransport(any()) } doReturn true
+        }
+        whenever(connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork))
+            .thenReturn(networkCapabilitiesMock)
+    }
 
     @ExperimentalCoroutinesApi
     @Test
@@ -74,7 +88,7 @@ class ArViewModelTest {
         }
 
         // ACT
-        arViewModel = ArViewModel(arImageRepository, weddingImageStorage, dispatcher, mock())
+        arViewModel = ArViewModel(arImageRepository, weddingImageStorage, dispatcher, mock(), connectivityManager)
         arViewModel.setupArtistImageDatabase(mock(), paramConfig)
 
         advanceUntilIdle()
@@ -116,7 +130,7 @@ class ArViewModelTest {
 
 
         // ACT
-        arViewModel = ArViewModel(arImageRepository, weddingImageStorage, dispatcher, resources)
+        arViewModel = ArViewModel(arImageRepository, weddingImageStorage, dispatcher, resources, connectivityManager)
         arViewModel.setupArtistImageDatabase(mock(), paramConfig)
 
         advanceUntilIdle()
@@ -134,6 +148,48 @@ class ArViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
+    fun `setupArtistImageDatabase should emit error toast when there is no internet connection`() = runTest {
+        // ARRANGE
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        val paramConfig = mock<Config>()
+        val resources = mock<Resources> {
+            on { getString(any()) } doReturn ""
+        }
+
+        val configResult = mutableListOf<ArFragmentConfig>()
+        val configJob = launch {
+            arViewModel.arFragmentConfig.toList(configResult)
+        }
+
+        val toastResult = mutableListOf<ToastViewModelWrapper>()
+        val toastJob = launch {
+            arViewModel.toastViewModel.toList(toastResult)
+        }
+
+        val networkCapabilitiesMock = mock<NetworkCapabilities> {
+            on { hasTransport(any()) } doReturn false
+        }
+        whenever(connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork))
+            .thenReturn(networkCapabilitiesMock)
+
+        // ACT
+        arViewModel = ArViewModel(arImageRepository, weddingImageStorage, dispatcher, resources, connectivityManager)
+        arViewModel.setupArtistImageDatabase(mock(), paramConfig)
+
+        advanceUntilIdle()
+
+        // ASSERT
+        assertThat(configResult.size).isEqualTo(1)
+
+        assertThat(toastResult.first().toastViewModel).isNotNull
+        assertThat(toastResult.size).isEqualTo(1)
+
+        toastJob.cancel()
+        configJob.cancel()
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
     fun `getVideoForImage should return video`() = runTest {
         // ARRANGE
         val dispatcher = StandardTestDispatcher(testScheduler)
@@ -143,7 +199,7 @@ class ArViewModelTest {
         whenever(weddingImageStorage.getConfigWithImageDatabase(eq(paramConfig), any(), any())).thenReturn(returnConfig)
         whenever(arImageRepository.getCardTransformations()).thenReturn(Result.success(getCardToTransformationMap()))
 
-        arViewModel = ArViewModel(arImageRepository, weddingImageStorage, dispatcher, mock())
+        arViewModel = ArViewModel(arImageRepository, weddingImageStorage, dispatcher, mock(), connectivityManager)
         arViewModel.setupArtistImageDatabase(mock(), paramConfig)
 
         advanceUntilIdle()

@@ -177,8 +177,15 @@ class CustomArFragment: Fragment(),
         if (augmentedImage.trackingState == TrackingState.TRACKING
             && augmentedImage.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
             if (isModelAdded.not()) {
+                val imageId = augmentedImage.name.toInt()
+                FirebaseAnalytics.getInstance(requireContext()).logEvent("image_detected",
+                    Bundle().apply {
+                        putString("type", "remote")
+                        putInt("image_id", imageId)
+                    }
+                )
 
-                viewModel.getCardTransformationForImage(augmentedImage.name.toInt())?.let {
+                viewModel.getCardTransformationForImage(imageId)?.let {
                     isModelAdded = true
                     showImageDetectedMessage()
                     enableLoadingView(true)
@@ -188,7 +195,7 @@ class CustomArFragment: Fragment(),
                             initializeMediaPlayer(it.cardVideo.videoUrl)
                         }
 
-                        createArtistArView(arFragment, augmentedImage, it)
+                        createCardArView(arFragment, augmentedImage, it)
                         populateCardLinkRecyclerView(it.cardLinks)
                         enableLoadingView(false)
                     }
@@ -291,7 +298,7 @@ class CustomArFragment: Fragment(),
         findNavController().navigate(action)
     }
 
-    private fun createArtistArView(
+    private fun createCardArView(
         arFragment: ArFragment,
         augmentedImage: AugmentedImage,
         cardTransformation: CardTransformation,
@@ -343,7 +350,8 @@ class CustomArFragment: Fragment(),
 
             FirebaseAnalytics.getInstance(requireContext()).logEvent("video_viewed",
                 Bundle().apply {
-                    putString("type", "local")
+                    putString("type", "remote")
+                    putString("url", cardTransformation.cardVideo.videoUrl)
                 }
             )
         }
@@ -379,7 +387,7 @@ class CustomArFragment: Fragment(),
 
                 FirebaseAnalytics.getInstance(requireContext()).logEvent("attachment_links_viewed",
                     Bundle().apply {
-                        putString("type", "local")
+                        putString("type", "remote")
                         putInt("count", artistLinkAdapter.itemCount)
                     }
                 )
@@ -426,10 +434,13 @@ class CustomArFragment: Fragment(),
         return Vector3(newVideoWidth, newVideoHeight, 0f)
     }
 
-    private fun initializeMediaPlayer(videoUrl: String): MediaPlayer =
-        MediaPlayer.create(activity, Uri.parse(videoUrl)).also {
-            it.isLooping = true
+    private fun initializeMediaPlayer(videoUrl: String): MediaPlayer? =
+        Uri.parse(videoUrl)?.let {
+            MediaPlayer.create(activity, Uri.parse(videoUrl)).also {
+                it.isLooping = true
+            }
         }
+
 
     private fun flattenViewOnImage(): Quaternion = Quaternion(Vector3(1f, 0f, 0f), NodeConfig.flattenNodeOnImageRotation)
 

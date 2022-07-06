@@ -19,8 +19,6 @@ import javax.inject.Singleton
 class CardTransformationApi @Inject constructor(@ApplicationContext context: Context) : Closeable {
 
     private val channel = let {
-        println("Connecting")
-
         AndroidChannelBuilder
             .forAddress(API_BASE_URL, API_ENDPOINT_PORT)
             .context(context)

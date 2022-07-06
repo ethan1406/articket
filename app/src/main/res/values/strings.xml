@@ -43,8 +43,13 @@
     </string>
     <string
         name="generic_fatal_error_snackbar_message"
-        translation_description="Message that appears in the toast when an irrecoverable error has occured">
+        translation_description="Message that appears in the toast when an irrecoverable error has occurred">
         Something went wrong. Please restart the app.
+    </string>
+    <string
+        name="generic_network_connection_error_message"
+        translation_description="Message that appears in the toast when there is no internet connection">
+        Please ensure that you have internet access
     </string>
     <string
         name="link_button_tap_while_recording_snackbar_error_message"

@@ -48,6 +48,11 @@
         系统出问题 请重启应用程式
     </string>
     <string
+        name="generic_network_connection_error_message"
+        translation_description="Message that appears in the toast when there is no internet connection">
+        请确保您可以有互联网
+    </string>
+    <string
         name="link_button_tap_while_recording_snackbar_error_message"
         translation_description="Message that appears in the toast when a link button is tapped while the user is recording.">
         录影时触控无效

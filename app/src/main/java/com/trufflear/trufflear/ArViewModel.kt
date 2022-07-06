@@ -1,9 +1,12 @@
 package com.trufflear.trufflear
 
 import android.content.res.Resources
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bugsnag.android.Bugsnag
 import com.trufflear.trufflear.data.ArImageRepository
 import com.trufflear.trufflear.data.WeddingImageStorage
 import com.google.ar.core.Config
@@ -23,7 +26,8 @@ class ArViewModel @Inject constructor(
     private val arImageRepository: ArImageRepository,
     private val weddingImageDatabase: WeddingImageStorage,
     @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher,
-    private val resources: Resources
+    private val resources: Resources,
+    private val connectivityManager: ConnectivityManager
 ): ViewModel() {
     private val TAG = ArViewModel::class.java.simpleName
 
@@ -42,35 +46,67 @@ class ArViewModel @Inject constructor(
         session: Session,
         config: Config
     ) {
-        viewModelScope.launch(defaultDispatcher) {
+        if (isNetworkAvailable()) {
+            viewModelScope.launch(defaultDispatcher) {
 
-            val result = arImageRepository.getCardTransformations()
-            result.onSuccess { map ->
-                imageToTransformationMap.clear()
-                imageToTransformationMap.putAll(map)
+                val result = arImageRepository.getCardTransformations()
+                result.onSuccess { map ->
+                    imageToTransformationMap.clear()
+                    imageToTransformationMap.putAll(map)
 
-                val localConfig = weddingImageDatabase.getConfigWithImageDatabase(
-                    config,
-                    session,
-                    imageToTransformationMap.values.map { it.cardImage }
-                )
-                _arFragmentConfig.value = ArFragmentConfig(localConfig)
-            }
-
-            result.onFailure {
-                _toastViewModel.value = ToastViewModelWrapper(
-                    ToastViewModel(
-                        text = resources.getString(R.string.generic_fatal_error_snackbar_message),
-                        duration = Toast.LENGTH_LONG
+                    val localConfig = weddingImageDatabase.getConfigWithImageDatabase(
+                        config,
+                        session,
+                        imageToTransformationMap.values.map { it.cardImage }
                     )
-                )
-            }
+                    _arFragmentConfig.value = ArFragmentConfig(localConfig)
+                }
 
-            _isInitialLoading.value = false
+                result.onFailure {
+                    Bugsnag.notify(it)
+                    emitErrorToast(
+                        ToastViewModel(
+                            text = resources.getString(R.string.generic_fatal_error_snackbar_message),
+                            duration = Toast.LENGTH_LONG
+                        )
+                    )
+                }
+
+                _isInitialLoading.value = false
+            }
+        } else {
+            emitErrorToast(
+                ToastViewModel(
+                    text = resources.getString(R.string.generic_network_connection_error_message),
+                    duration = Toast.LENGTH_LONG
+                )
+            )
         }
     }
 
     fun getCardTransformationForImage(imageId: Int): CardTransformation? = imageToTransformationMap[imageId]
+
+    private fun emitErrorToast(toastViewModel: ToastViewModel) {
+        _toastViewModel.value = ToastViewModelWrapper(toastViewModel)
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)     -> {
+                    return true
+                }
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                    return true
+                }
+            }
+        }
+        return  false
+    }
 
 }
 
